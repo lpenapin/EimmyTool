@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EimmyTool.Views.ContactsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EimmyTool.Views"
+    xmlns:models="using:EimmyTool.Models"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:converters="using:EimmyTool.Converters"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <converters:CurrencyFormatConverter x:Key="CurrencyConverter"/>
+        <converters:DebtToBrushConverter x:Key="DebtColorConverter"/>
+    </Page.Resources>
+    
+    <TabView Grid.Row="1" Margin="0,16,0,0">
+
+        <TabViewItem Header="Clientes">
+            <StackPanel Spacing="16">
+                <Grid ColumnDefinitions="Auto, *" Margin="0,5">
+                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                        <TextBlock Text="Cédula/NIT:" VerticalAlignment="Center" Margin="0,0,10,0" Width="80"/>
+                        <TextBox x:Name="DniBoxClient" PlaceholderText="Ingrese la cédula / el NIT" 
+                     Width="250" LostFocus="DniBoxClient_LostFocus" KeyDown="DniBoxClient_KeyDown"/>
+
+                    <TextBlock x:Name="ClientText"
+                               VerticalAlignment="Center" 
+                                Margin="15,0,0,0"
+                                FontStyle="Italic"
+                                Foreground="Gray"/>
+                    </StackPanel>
+                    
+
+                    <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <AppBarButton Icon="Add" Label="Nuevo Cliente" Click="AddClient_Click"/>
+                        <AppBarButton Icon="Edit" Label="Editar" x:Name="BtnEditClient" Click="EditClient_Click" IsEnabled="False"/>
+                        <AppBarSeparator />
+                        <AppBarButton Icon="Clock" Label="Historial" x:Name="BtnHistory" Click="ViewHistory_Click" IsEnabled="False"/>
+                        <AppBarButton Label="Pagar Deuda" x:Name="BtnPayDebt" Click="PayDebt_Click" IsEnabled="False">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xe8c7;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
+                    </CommandBar>
+                </Grid>
+                <Grid>
+                    <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                        <TextBlock Text="Cédula/NIT" Grid.Column="0" FontWeight="Bold"/>
+                        <TextBlock Text="Nombre" Grid.Column="1" FontWeight="Bold"/>
+                        <TextBlock Text="Teléfono" Grid.Column="2" FontWeight="Bold"/>
+                        <TextBlock Text="Email" Grid.Column="3" FontWeight="Bold"/>
+                        <TextBlock Text="Dirección" Grid.Column="4" FontWeight="Bold"/>
+                        <TextBlock Text="Deuda" Grid.Column="5" FontWeight="Bold"/>
+                    </Grid>
+                    <ListView x:Name="ClientsList" Margin="0,40,0,0" SelectionMode="Single"
+                      SelectionChanged="ClientsList_SelectionChanged">
+                        
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Client">
+                                <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="4">
+                                    <TextBlock Text="{x:Bind DNI}" Grid.Column="0"/>
+                                    <TextBlock Text="{x:Bind Name}" Grid.Column="1"/>
+                                    <TextBlock Text="{x:Bind Phone}" Grid.Column="2"/>
+                                    <TextBlock Text="{x:Bind Email}" Grid.Column="3"/>
+                                    <TextBlock Text="{x:Bind Address}" Grid.Column="4"/>
+                                    <TextBlock Text="{x:Bind Debt, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" 
+                                           Foreground="{x:Bind Debt, Converter={StaticResource DebtColorConverter}, Mode=OneWay}"
+                                           Grid.Column="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                       <!-- <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="ContextFlyout">
+                                    <Setter.Value>
+                                        <MenuFlyout>
+                                            <MenuFlyoutItem Text="Editar Cliente" Icon="Edit" Click="EditClient_Click"/>
+                                            <MenuFlyoutItem Text="Ver Historial" Icon="Clock" Click="ViewHistory_Click"/>
+                                            <MenuFlyoutItem Text="Pagar Deuda" Click="PayDebt_Click">
+                                                <MenuFlyoutItem.Icon>
+                                                    <FontIcon Glyph="&#xe8c7;" />
+                                                </MenuFlyoutItem.Icon>
+                                            </MenuFlyoutItem>
+                                        </MenuFlyout>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListView.ItemContainerStyle> -->
+                    </ListView>
+                </Grid>
+            </StackPanel>
+        </TabViewItem>
+
+        <TabViewItem Header="Proveedores">
+            <StackPanel Spacing="16">
+                <Grid ColumnDefinitions="Auto, *" Margin="0,5">
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Cédula/NIT:" VerticalAlignment="Center" Margin="0,0,10,0" Width="80"/>
+                        <TextBox x:Name="DniBoxSupplier" PlaceholderText="Ingrese la cédula / el NIT" 
+                                Width="250" LostFocus="DniBoxSupplier_LostFocus" KeyDown="DniBoxSupplier_KeyDown"/>
+                        <TextBlock x:Name="SupplierText"
+                                   VerticalAlignment="Center" 
+                                    Margin="15,0,0,0"
+                                    FontStyle="Italic"
+                                    Foreground="Gray"/>
+                    </StackPanel>
+                    <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <AppBarButton Icon="Add" Label="Nuevo Proveedor" Click="AddSupplier_Click"/>
+                        <AppBarButton Icon="Edit" Label="Editar Proveedor" Click="EditSupplier_Click"/>
+                    </CommandBar>
+                </Grid>
+                <Grid>
+                    <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                        <TextBlock Text="Cédula/NIT" Grid.Column="0" FontWeight="Bold"/>
+                        <TextBlock Text="Nombre" Grid.Column="1" FontWeight="Bold"/>
+                        <TextBlock Text="Teléfono" Grid.Column="2" FontWeight="Bold"/>
+                        <TextBlock Text="Email" Grid.Column="3" FontWeight="Bold"/>
+                        <TextBlock Text="Dirección" Grid.Column="4" FontWeight="Bold"/>
+                        <TextBlock Text="Deuda" Grid.Column="5" FontWeight="Bold"/>
+                    </Grid>
+                    <ListView x:Name="SuppliersList" Margin="0,40,0,0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:Client">
+                                <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="4">
+                                    <TextBlock Text="{x:Bind DNI}" Grid.Column="0"/>
+                                    <TextBlock Text="{x:Bind Name}" Grid.Column="1"/>
+                                    <TextBlock Text="{x:Bind Phone}" Grid.Column="2"/>
+                                    <TextBlock Text="{x:Bind Email}" Grid.Column="3"/>
+                                    <TextBlock Text="{x:Bind Address}" Grid.Column="4"/>
+                                    <TextBlock Text="{x:Bind Debt, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" 
+                                           Foreground="{x:Bind Debt, Converter={StaticResource DebtColorConverter}, Mode=OneWay}"
+                                           Grid.Column="5"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </StackPanel>
+        </TabViewItem>
+
+        <TabViewItem Header="Usuarios">
+            <StackPanel Spacing="16">
+                <Grid ColumnDefinitions="Auto, *" Margin="0,5">
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Text="Cédula/NIT:" VerticalAlignment="Center" Margin="0,0,10,0" Width="80"/>
+                        <TextBox x:Name="DniBoxUser" PlaceholderText="Ingrese la cédula / el NIT" 
+                                Width="250" LostFocus="DniBoxUser_LostFocus" KeyDown="DniBoxUser_KeyDown"/>
+                        <TextBlock x:Name="UserText"
+                                   VerticalAlignment="Center" 
+                                   Margin="15,0,0,0"
+                                   FontStyle="Italic"
+                                   Foreground="Gray"/>
+                    </StackPanel>
+                    <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <AppBarButton Icon="Add" Label="Nuevo Usuario" Click="AddUser_Click"/>
+                        <AppBarButton Icon="Edit" Label="Editar Usuario" Click="EditUser_Click"/>
+                    </CommandBar>
+                </Grid>
+                <Grid>
+                    <Grid ColumnDefinitions="100,*,*,*,*,*,*,100" Padding="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                        <TextBlock Text="Usuario" Grid.Column="0" FontWeight="Bold"/>
+                        <TextBlock Text="Nombre" Grid.Column="1" FontWeight="Bold"/>
+                        <TextBlock Text="Cédula" Grid.Column="2" FontWeight="Bold"/>
+                        <TextBlock Text="Correo" Grid.Column="3" FontWeight="Bold"/>
+                        <TextBlock Text="Teléfono" Grid.Column="4" FontWeight="Bold"/>
+                        <TextBlock Text="Dirección" Grid.Column="5" FontWeight="Bold"/>
+                        <TextBlock Text="Rol" Grid.Column="6" FontWeight="Bold"/>
+                        <TextBlock Text="Estado" Grid.Column="7" FontWeight="Bold" TextAlignment="Center"/>
+                    </Grid>
+                    <ListView x:Name="UsersList" Margin="0,40,0,0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:User">
+                                <Grid ColumnDefinitions="100,*,*,*,*,*,*,100" Padding="4">
+                                    <TextBlock Text="{Binding Username}"/>
+                                    <TextBlock Text="{Binding Name}" Grid.Column="1"/>
+                                    <TextBlock Text="{Binding DNI}" Grid.Column="2"/>
+                                    <TextBlock Text="{Binding Email}" Grid.Column="3"/>
+                                    <TextBlock Text="{Binding Phone}" Grid.Column="4"/>
+                                    <TextBlock Text="{Binding Address}" Grid.Column="5"/>
+                                    <TextBlock Text="{Binding Role}" Grid.Column="6"/>
+                                    <TextBlock Text="{Binding Status}" Grid.Column="7" TextAlignment="Center"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </StackPanel>
+        </TabViewItem>
+
+    </TabView>
+</Page>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "EimmyTool (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "EimmyTool (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
