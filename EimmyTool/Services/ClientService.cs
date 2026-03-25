@@ -8,7 +8,6 @@ namespace EimmyTool.Services
     public class ClientService
     {
         private readonly string _cs;
-
         public ClientService(string connectionString)
         {
             _cs = connectionString;
@@ -36,7 +35,7 @@ namespace EimmyTool.Services
             conn.Open();
             var cmd = conn.CreateCommand();
             // Cambia "Clients" por "Suppliers" en ProviderService
-            cmd.CommandText = "SELECT id, name, DNI, email, phone, address, debt FROM Clients";
+            cmd.CommandText = "SELECT id, name, DNI, email, phone, address, debt FROM Clients ORDER BY name";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -64,6 +63,7 @@ namespace EimmyTool.Services
                 SELECT id, name, DNI, email, phone, address, debt
                 FROM Clients
                 WHERE DNI = @dni
+                ORDER BY name
             """;
 
             cmd.Parameters.AddWithValue("@dni", dni);

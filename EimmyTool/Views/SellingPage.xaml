@@ -30,16 +30,15 @@
             <Grid RowDefinitions="Auto,*" ColumnSpacing="20">
 
                 <!-- TOP SECTION -->
-                <Grid ColumnDefinitions="*,*">
+                <Grid RowDefinitions="*,*">
 
                     <!-- LEFT: CLIENT INFO -->
                     <StackPanel Spacing="10">
-
                         <TextBlock
                             Text="Información del cliente"
                             FontSize="20"
                             FontWeight="SemiBold"/>
-
+                        
                         <StackPanel Orientation="Horizontal" Margin="0,5" Spacing="12">
                             <TextBox 
                                 x:Name="DniBox" 
@@ -56,79 +55,49 @@
 
                         <StackPanel Orientation="Horizontal" Margin="0,5" Spacing="12">
                             <TextBox
-                                x:Name="NameBox" 
-                                Header="Nombre" 
-                                Width="200"/>
+                            x:Name="NameBox" 
+                            Header="Nombre" 
+                            Width="200"/>
                             <TextBox 
-                                x:Name="PhoneBox" 
-                                Header="Teléfono" 
-                                Width="100"/>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,5" Spacing="12">
+                            x:Name="PhoneBox" 
+                            Header="Teléfono" 
+                            Width="100"/>
                             <TextBox 
-                                x:Name="EmailBox" 
-                                Header="Correo" 
-                                Width="150"/>
+                            x:Name="EmailBox" 
+                            Header="Correo" 
+                            Width="150"/>
                             <TextBox 
-                                x:Name="AddressBox" 
-                                Header="Dirección" 
-                                Width="200"/>
+                            x:Name="AddressBox" 
+                            Header="Dirección" 
+                            Width="200"/>
                         </StackPanel>
 
                     </StackPanel>
 
                     <!-- RIGHT: PRODUCT / STOCK -->
-                    <StackPanel Grid.Column="1" Spacing="12">
+                    <StackPanel Grid.Row="1" Spacing="12">
 
                         <TextBlock
-                                Text="Producto"
-                                FontSize="20"
-                                FontWeight="SemiBold"/>
-
-                        <TextBox
+                            Text="Producto"
+                            FontSize="20"
+                            FontWeight="SemiBold"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,5" Spacing="12">
+                            <TextBox
                                 x:Name="SkuBox"
-                                Header="SKU"
-                                PlaceholderText="Escanear o ingresar SKU"
-                                LostFocus="SkuBox_LostFocus"/>
-
-                        <TextBox
-                                x:Name="ProductNameBox"
-                                Header="Producto"
-                                IsReadOnly="True"/>
-                        <TextBlock
-                                x:Name="StockText"
-                                FontStyle="Italic"
-                                Foreground="Gray"/>
-
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-
-                                <TextBox
-                                    x:Name="QuantityBox"
-                                    Header="Cantidad"
-                                    Width="120"/>
-
-                                <TextBox
-                                    x:Name="PriceBox"
-                                    Header="Precio"
-                                    Width="160"
-                                    IsReadOnly="True"/>
-                                <CheckBox 
-                                    x:Name="RetailPriceCheckBox" 
-                                    Content="Mayorista"
-                                    Checked="PriceBox_TwoState_Checked"
-                                    Unchecked="PriceBox_TwoState_Unchecked"
-                                    VerticalAlignment="Bottom"
-                                    Margin="0,0,0,8"/>
-                                
-                                <Button
-                                    Content="Agregar item"
-                                    Width="160"
-                                    Click="AddItem_Click"/>
-
-                            </StackPanel>
-                        
+                                Header="Referencia"
+                                PlaceholderText="Escanear o ingresar codigo"
+                                LostFocus="SkuBox_LostFocus"
+                                MinWidth="500"
+                                MaxWidth="1200"/>
+                            <CheckBox 
+                                x:Name="RetailPriceCheckBox" 
+                                Content="Mayorista"
+                                Checked="PriceBox_TwoState_Checked"
+                                Unchecked="PriceBox_TwoState_Unchecked"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,0,8"/>
                         </StackPanel>
+                    </StackPanel>
 
                 </Grid>
 
@@ -165,13 +134,21 @@
                                             Click="RemoveItem_Click"
                                             Tag="{x:Bind}"/>
                                         <TextBlock Text="{x:Bind Name}" Grid.Column="1" />
-                                        <TextBlock Text="{x:Bind Quantity}" Grid.Column="2"/>
+                                        <NumberBox 
+                                            Value="{x:Bind Quantity, Mode=TwoWay}"
+                                            ValueChanged="QuantityBox_ValueChanged"
+                                            Minimum="1"
+                                            Maximum="{x:Bind MaxQuantity}"
+                                            Grid.Column="2" 
+                                            SpinButtonPlacementMode="Inline"
+                                            SmallChange="1"
+                                            MaxWidth="150"
+                                            HorizontalAlignment="Left"/>
                                         <TextBlock Text="{x:Bind UnitPrice, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
                                                    Grid.Column="3"/>
                                         <TextBlock Text="{x:Bind Total, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
                                                    Grid.Column="4"/>
                                     </Grid>
-                                    
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>
@@ -201,7 +178,6 @@
 
                                 <TextBlock Text="Subtotal:" Grid.Row="0" Grid.Column="0"/>
                                 <TextBlock x:Name="SubtotalText" Grid.Column="1" TextAlignment="Right"/>
-
                                 <TextBlock Text="Descuento (%)" Grid.Row="1" Grid.Column="0"/>
                                 <TextBox
                                     x:Name="TaxBox"
@@ -211,7 +187,7 @@
                                     TextAlignment="Right"
                                     TextChanged="TaxBox_TextChanged"/>
 
-                                <TextBlock Text="Tax Amount" Grid.Row="2" Grid.Column="0"/>
+                                <TextBlock Text="Descuento ($)" Grid.Row="2" Grid.Column="0"/>
                                 <TextBlock
                                     x:Name="TaxAmountText"
                                     Grid.Row="2"

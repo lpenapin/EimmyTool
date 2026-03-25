@@ -10,7 +10,7 @@
   <Identity
     Name="65f05021-799b-4ab8-9e27-a28e3631a6ca"
     Publisher="CN=LuisPena"
-    Version="1.0.0.0" />
+    Version="1.0.3.0" />
 
   <mp:PhoneIdentity PhoneProductId="65f05021-799b-4ab8-9e27-a28e3631a6ca" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

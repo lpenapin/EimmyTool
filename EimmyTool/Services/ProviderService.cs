@@ -36,7 +36,7 @@ namespace EimmyTool.Services
             conn.Open();
             var cmd = conn.CreateCommand();
             // Cambia "Clients" por "Suppliers" en ProviderService
-            cmd.CommandText = "SELECT id, name, DNI, email, phone, address, debt FROM Suppliers";
+            cmd.CommandText = "SELECT id, name, DNI, email, phone, address, debt FROM Suppliers ORDER BY name";
 
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
@@ -64,6 +64,7 @@ namespace EimmyTool.Services
                 SELECT id, name, DNI, email, phone, address, debt
                 FROM Suppliers
                 WHERE DNI = @dni
+                ORDER BY name
             """;
 
             cmd.Parameters.AddWithValue("@dni", dni);
@@ -81,6 +82,36 @@ namespace EimmyTool.Services
                 Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
                 Address = reader.IsDBNull(5) ? "" : reader.GetString(5),
                 Debt = reader.IsDBNull(6) ? 0 : reader.GetDecimal(6)
+            };
+        }
+        public Client? GetByInvoice(int invoice)
+        {
+            using var conn = new SqliteConnection(_cs);
+            conn.Open();
+
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                SELECT c.id, c.name, c.DNI, c.email, c.phone, c.address, c.debt
+                FROM PurchaseInvoices s
+                JOIN Suppliers c ON c.id = s.supplier_id
+                WHERE s.id = @invoice
+            """;
+
+            cmd.Parameters.AddWithValue("@invoice", invoice);
+
+            using var reader = cmd.ExecuteReader();
+            if (!reader.Read())
+                return null;
+
+            return new Client
+            {
+                Id = reader.GetInt32(0),
+                Name = reader.GetString(1),
+                DNI = reader.GetString(2),
+                Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
+                Phone = reader.IsDBNull(4) ? "" : reader.GetString(4),
+                Address = reader.IsDBNull(5) ? "" : reader.GetString(5),
+                Debt = reader.IsDBNull(6) ? 0 : reader.GetDecimal(6),
             };
         }
     }

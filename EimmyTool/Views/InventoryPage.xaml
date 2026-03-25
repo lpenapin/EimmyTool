@@ -4,33 +4,89 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:EimmyTool.Views"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:controls="using:CommunityToolkit.WinUI.UI.Controls"
-    mc:Ignorable="d">
+    xmlns:models="using:EimmyTool.Models"
+    xmlns:converters="using:EimmyTool.Converters">
+    <Page.Resources>
+        <converters:CurrencyFormatConverter x:Key="CurrencyConverter"/>
+        <converters:DebtToBrushConverter x:Key="DebtColorConverter"/>
+        <converters:DateToLocalConverter x:Key="DateConverter"/>
+    </Page.Resources>
 
-    <Grid Padding="20">
-        <StackPanel Spacing="12">
+    <Grid Padding="24" RowDefinitions="Auto,*">
+        <TextBlock
+            Text="Inventario"
+            FontSize="28"
+            FontWeight="SemiBold"/>
+        <StackPanel Grid.Row="1" Spacing="16">
+            <Grid RowDefinitions="Auto,*" ColumnSpacing="20">
+                <StackPanel Orientation="Horizontal" Margin="0,5">
+                    <TextBlock Text="Codigo:" VerticalAlignment="Center" Margin="0,0,10,0" Width="80"/>
+                    <TextBox x:Name="SKUbox" PlaceholderText="Ingrese/Escanee el codigo de barras" 
+                Width="250" LostFocus="SKUbox_LostFocus" KeyDown="SKUbox_KeyDown"/>
+                    <TextBlock x:Name="SKUText"
+                   VerticalAlignment="Center" 
+                   Margin="15,0,0,0"
+                   FontStyle="Italic"
+                   Foreground="Gray"/>
+                </StackPanel>
 
-            <TextBlock
-                Text="Inventario"
-                FontSize="26"
-                FontWeight="SemiBold"/>
+                <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
+                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <AppBarButton Icon="Add" Label="Nuevo Producto" Click="AddItem_Click"/>
+                    <AppBarSeparator />
+                    <AppBarButton Icon="Edit" Label="Editar" x:Name="BtnEditItem" Click="EditItem_Click" IsEnabled="False"/>
+                    <AppBarButton Label="Ajustar Cantidad" x:Name="BtnCantidadItem" Click="AjusteCantidadItem_Click" IsEnabled="False">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xe777;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                </CommandBar>
+            </Grid>
+            <Grid>
 
-            <controls:DataGrid
-                x:Name="InventoryGrid"
-                AutoGenerateColumns="False"
-                IsReadOnly="True">
+                <!-- HEADER -->
+                <Grid ColumnDefinitions="*,100,*,120,120,120"
+              Padding="8"
+              Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+              BorderThickness="0,0,0,1"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                    <TextBlock Text="Producto" Grid.Column="0" FontWeight="Bold"/>
+                    <TextBlock Text="Cantidad" Grid.Column="1" FontWeight="Bold"/>
+                    <TextBlock Text="Descripción" Grid.Column="2" FontWeight="Bold"/>
+                    <TextBlock Text="Costo" Grid.Column="3" FontWeight="Bold"/>
+                    <TextBlock Text="Precio" Grid.Column="4" FontWeight="Bold"/>
+                    <TextBlock Text="Precio Mayorista" Grid.Column="5" FontWeight="Bold"/>
+                </Grid>
+                <Border
+            Grid.Row="1"
+            Margin="0,40,0,0"
+            Padding="0"
+            CornerRadius="8"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                            HorizontalScrollBarVisibility="Auto">
 
-                <controls:DataGrid.Columns>
-                    <controls:DataGridTextColumn Header="Producto" Binding="{Binding Name}" Width="*" />
-                    <controls:DataGridTextColumn Header="Cantidad" Binding="{Binding Quantity}" Width="100" />
-                    <controls:DataGridTextColumn Header="Descripción" Binding="{Binding Description}" Width="*" />
-                    <controls:DataGridTextColumn Header="Costo Prom" Binding="{Binding Cost}" Width="120" />
-                    <controls:DataGridTextColumn Header="Precio Prom" Binding="{Binding Price}" Width="120" />
-                </controls:DataGrid.Columns>
-
-            </controls:DataGrid>
-
+                        <ListView x:Name="StockList" Margin="0,0,0,0" SelectionMode="Single"
+                        SelectionChanged="SKUList_SelectionChanged">
+                            <ListView.ItemTemplate>
+                                <DataTemplate  x:DataType="models:InventoryItem">
+                                    <Grid ColumnDefinitions="*,100,*,120,120,120" Padding="4">
+                                        <TextBlock Text="{Binding Name}"/>
+                                        <TextBlock Text="{Binding Quantity}" Grid.Column="1" TextAlignment="Center"/>
+                                        <TextBlock Text="{Binding Description}" Grid.Column="2"/>
+                                        <TextBlock Text="{Binding Cost, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                        Grid.Column="3" TextAlignment="Center"/>
+                                        <TextBlock Text="{Binding Price,Converter={StaticResource CurrencyConverter}, Mode=OneWay}" 
+                                        Grid.Column="4" TextAlignment="Center"/>
+                                        <TextBlock Text="{Binding RetailPrice, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" 
+                                        Grid.Column="5" TextAlignment="Center"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
         </StackPanel>
     </Grid>
 </Page>

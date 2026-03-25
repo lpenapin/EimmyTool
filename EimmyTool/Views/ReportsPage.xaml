@@ -2,7 +2,15 @@
 <Page
     x:Class="EimmyTool.Views.ReportsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EimmyTool.Views"
+    xmlns:models="using:EimmyTool.Models"
+    xmlns:converters="using:EimmyTool.Converters">
+    <Page.Resources>
+        <converters:CurrencyFormatConverter x:Key="CurrencyConverter"/>
+        <converters:DebtToBrushConverter x:Key="DebtColorConverter"/>
+        <converters:DateToLocalConverter x:Key="DateConverter"/>
+    </Page.Resources>
 
     <Grid Padding="24" RowDefinitions="Auto,*">
 
@@ -14,84 +22,451 @@
         <TabView Grid.Row="1" Margin="0,16,0,0">
 
             <!-- DAILY SALES -->
-            <TabViewItem Header="Ventas">
+            <TabViewItem Header="Ventas Diarias">
                 <StackPanel Spacing="12">
 
                     <DatePicker
                         x:Name="SalesDatePicker"
-                        Header="Select date"
-                        DateChanged="SalesDateChanged"/>
+                        Header="Selecciona una fecha"
+                        DateChanged="SalesDateChangedDay"/>
 
                     <StackPanel Orientation="Horizontal" Spacing="24">
                         <TextBlock x:Name="InvoicesCountText"/>
+                        <TextBlock x:Name="PaidTotalText"/>
                         <TextBlock x:Name="SalesTotalText"/>
                     </StackPanel>
 
                     <StackPanel>
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="80,*,*,*,100"
+                            Padding="8"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            BorderThickness="0,0,0,1"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                            <TextBlock Text="Recibo #" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Cliente" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Usuario" Grid.Column="2" FontWeight="Bold"/>
+                            <TextBlock Text="Pagado" Grid.Column="3" FontWeight="Bold"/>
+                            <TextBlock Text="Total" Grid.Column="4" FontWeight="Bold"/>
+                        </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Padding="0"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                            HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="SalesListDaily" Margin="0,0,0,0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:SalesReportItem">
+                                            <Grid ColumnDefinitions="80,*,*,*,100" Padding="4">
+                                                <TextBlock Text="{Binding Id}"/>
+                                                <TextBlock Text="{Binding Client}"  Grid.Column="1"/>
+                                                <TextBlock Text="{Binding User}"  Grid.Column="2"/>
+                                                <TextBlock Text="{Binding Paid,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                    Grid.Column="3"/>
+                                                <TextBlock Text="{Binding Total,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                    Grid.Column="4"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabViewItem>
+
+            <!-- MONTHLY SALES -->
+            <TabViewItem Header="Ventas Mensuales">
+                <StackPanel Spacing="12">
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <DatePicker
+                            x:Name="SalesDatePickerFrom"
+                            Header="Desde"/>
+
+                        <DatePicker
+                            x:Name="SalesDatePickerTo"
+                            Header="Hasta"/>
+                        <Button 
+                            x:Name="SearchInvoicesButton"
+                            Content="Buscar"
+                            HorizontalAlignment="Right"
+                            Margin="0,16,5,0"
+                            Click="SearchInvoices_Click"
+                            Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <TextBlock x:Name="InvoicesMonthCountText"/>
+                        <TextBlock x:Name="SalesTotalMonthText"/>
+                    </StackPanel>
+
+                    <StackPanel 
+                        Width="400" 
+                        Height="Auto"
+                        HorizontalAlignment="Left">
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="80,*,100"
+                          Padding="8"
+                          Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                          BorderThickness="0,0,0,1"
+                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                            <TextBlock Text="Dia" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Ventas" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Total" Grid.Column="2" FontWeight="Bold"/>
+                        </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Padding="0"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="SalesListMonth">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:SalesReportMonthItem">
+                                            <Grid ColumnDefinitions="80,*,100">
+                                                <TextBlock Text="{Binding Day}"/>
+                                                <TextBlock Text="{Binding TotalInvoices}" Grid.Column="1"/>
+                                                <TextBlock Text="{Binding TotalSales,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                   Grid.Column="2"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabViewItem>
+
+            <!-- DAILY BUYS -->
+            <TabViewItem Header="Compras Diarias">
+                <StackPanel Spacing="12">
+
+                    <DatePicker
+            x:Name="BuysDatePicker"
+            Header="Selecciona una fecha"
+            DateChanged="BuysDateChangedDay"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <TextBlock x:Name="InvoicesBuyCountText"/>
+                        <TextBlock x:Name="PaidTotalBuyText"/>
+                        <TextBlock x:Name="BuysTotalText"/>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="80,*,*,*,100"
+                            Padding="8"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            BorderThickness="0,0,0,1"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                            <TextBlock Text="Recibo #" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Proveedor" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Usuario" Grid.Column="2" FontWeight="Bold"/>
+                            <TextBlock Text="Pagado" Grid.Column="3" FontWeight="Bold"/>
+                            <TextBlock Text="Total" Grid.Column="4" FontWeight="Bold"/>
+                        </Grid>
+                        <Border
+                Grid.Row="1"
+                Margin="0,10,0,0"
+                Padding="0"
+                CornerRadius="8"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="BuysListDaily" Margin="0,0,0,0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:SalesReportItem">
+                                            <Grid ColumnDefinitions="80,*,*,*,100" Padding="4">
+                                                <TextBlock Text="{Binding Id}"/>
+                                                <TextBlock Text="{Binding Client}"  Grid.Column="1"/>
+                                                <TextBlock Text="{Binding User}"  Grid.Column="2"/>
+                                                <TextBlock Text="{Binding Paid,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                        Grid.Column="3"/>
+                                                <TextBlock Text="{Binding Total,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                        Grid.Column="4"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabViewItem>
+
+            <!-- MONTHLY BUYS -->
+            <TabViewItem Header="Compras Mensuales">
+                <StackPanel Spacing="12">
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <DatePicker
+                x:Name="BuysDatePickerFrom"
+                Header="Desde"/>
+
+                        <DatePicker
+                x:Name="BuysDatePickerTo"
+                Header="Hasta"/>
+                        <Button 
+                x:Name="SearchInvoicesBuyButton"
+                Content="Buscar"
+                HorizontalAlignment="Right"
+                Margin="0,16,5,0"
+                Click="SearchInvoicesBuy_Click"
+                Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <TextBlock x:Name="InvoicesBuyMonthCountText"/>
+                        <TextBlock x:Name="BuysTotalMonthText"/>
+                    </StackPanel>
+
+                    <StackPanel 
+                        Width="400" 
+                        Height="Auto"
+                        HorizontalAlignment="Left">
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="80,*,100"
+                              Padding="8"
+                              Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                              BorderThickness="0,0,0,1"
+                              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                            <TextBlock Text="Dia" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Compras" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Total" Grid.Column="2" FontWeight="Bold"/>
+                        </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Padding="0"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="BuysListMonth">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:SalesReportMonthItem">
+                                            <Grid ColumnDefinitions="80,*,100">
+                                                <TextBlock Text="{Binding Day}"/>
+                                                <TextBlock Text="{Binding TotalInvoices}" Grid.Column="1"/>
+                                                <TextBlock Text="{Binding TotalSales,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                    Grid.Column="2"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabViewItem>
+
+            <!-- DAILY CASH FLOW -->
+            <TabViewItem Header="Flujo de caja Diario">
+                <StackPanel Spacing="12">
+
+                    <DatePicker
+                        x:Name="CashFlowDatePicker"
+                        Header="Selecciona una fecha"
+                        DateChanged="CashFlowDateChangedDay"/>
+
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <TextBlock x:Name="DebitsCountText"/>
+                        <TextBlock x:Name="TotalDebitsText"/>
+                        <AppBarSeparator />
+                        <TextBlock x:Name="CreditsText"/>
+                        <TextBlock x:Name="TotalCreditsText"/>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="250,*,*,*,100"
+                            Padding="8"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                            BorderThickness="0,0,0,1"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                            <TextBlock Text="Tipo" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Factura #" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Entrada" Grid.Column="2" FontWeight="Bold"/>
+                            <TextBlock Text="Salida" Grid.Column="3" FontWeight="Bold"/>
+                            <TextBlock Text="Usuario" Grid.Column="4" FontWeight="Bold"/>
+                        </Grid>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Padding="0"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                    HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="CashFlowListDaily" Margin="0,0,0,0">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:CashFlowItem">
+                                            <Grid ColumnDefinitions="250,*,*,*,100" Padding="4">
+                                                <TextBlock Text="{Binding Detail}"/>
+                                                <TextBlock Text="{Binding Reference}"  Grid.Column="1"/>
+                                                <TextBlock Text="{Binding Debit, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"  
+                                                           Grid.Column="2"/>
+                                                <TextBlock Text="{Binding Credit, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"  
+                                                           Grid.Column="3"/>
+                                                <TextBlock Text="{Binding User}"  Grid.Column="4"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </TabViewItem>
+            
+            <!-- MONTHLY CASH FLOW -->
+            <TabViewItem Header="Flujo de caja Mensual">
+                <StackPanel Spacing="12">
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <DatePicker
+                            x:Name="CashFlowDatePickerFrom"
+                            Header="Desde"/>
+
+                        <DatePicker
+                            x:Name="CashFlowDatePickerTo"
+                            Header="Hasta"/>
+                        <Button 
+                            x:Name="SearchCashFlowButton"
+                            Content="Buscar"
+                            HorizontalAlignment="Right"
+                            Margin="0,16,5,0"
+                            Click="SearchCashFlow_Click"
+                            Style="{StaticResource AccentButtonStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <TextBlock x:Name="DebitsMonthCountText"/>
+                        <TextBlock x:Name="TotalDebitsMonthText"/>
+                        <AppBarSeparator />
+                        <TextBlock x:Name="CreditsMonthText"/>
+                        <TextBlock x:Name="TotalCreditsMonthText"/>
+                    </StackPanel>
+
+                    <StackPanel 
+                        Width="600" 
+                        Height="Auto"
+                        HorizontalAlignment="Left">
                         <!-- HEADER -->
                         <Grid ColumnDefinitions="80,*,*,100"
                           Padding="8"
                           Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
                           BorderThickness="0,0,0,1"
                           BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
-                            <TextBlock Text="Recibo #" Grid.Column="0"/>
-                            <TextBlock Text="Cliente" Grid.Column="1"/>
-                            <TextBlock Text="Usuario" Grid.Column="2"/>
-                            <TextBlock Text="Total" Grid.Column="3"/>
-
+                            <TextBlock Text="Dia" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Entrada" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Salida" Grid.Column="2" FontWeight="Bold"/>
+                            <TextBlock Text="Total" Grid.Column="3" FontWeight="Bold"/>
                         </Grid>
-                        <ListView x:Name="SalesList">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                    <Grid ColumnDefinitions="80,*,*,100">
-                                    <TextBlock Text="{Binding Id}"/>
-                                    <TextBlock Text="{Binding Client}"  Grid.Column="1"/>
-                                    <TextBlock Text="{Binding User}"  Grid.Column="2"/>
-                                    <TextBlock Text="{Binding Total}" Grid.Column="3"/>
-                                    </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        <Border
+                            Grid.Row="1"
+                            Margin="0,10,0,0"
+                            Padding="0"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                                HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="CashFlowListMonth">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:CashFlowItem">
+                                            <Grid ColumnDefinitions="80,*,*,100">
+                                                <TextBlock Text="{Binding Date}"/>
+                                                <TextBlock Text="{Binding Debit,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                    Grid.Column="1"/>
+                                                <TextBlock Text="{Binding Credit,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                    Grid.Column="2"/>
+                                                <TextBlock Text="{Binding Total,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                           Foreground="{x:Bind Total, Converter={StaticResource DebtColorConverter}, Mode=OneWay}"
+                                                    Grid.Column="3"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
                     </StackPanel>
                 </StackPanel>
             </TabViewItem>
 
-            <!-- STOCK -->
-            <TabViewItem Header="Inventario">
-                <StackPanel>
+            <!-- YEAR CASH FLOW -->
+            <TabViewItem Header="Flujo de caja Anual">
+                <StackPanel Spacing="12">
 
-                    <!-- HEADER -->
-                    <Grid ColumnDefinitions="*,100,*,120,120"
-                          Padding="8"
-                          Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
-                          BorderThickness="0,0,0,1"
-                          BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
-                        <TextBlock Text="Producto" Grid.Column="0"/>
-                        <TextBlock Text="Cantidad" Grid.Column="1"/>
-                        <TextBlock Text="Descripción" Grid.Column="2"/>
-                        <TextBlock Text="Costo" Grid.Column="3"/>
-                        <TextBlock Text="Precio" Grid.Column="4"/>
-                        
-                    </Grid>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <TextBlock Text="Seleccione el año:" Style="{StaticResource BodyTextBlockStyle}"/>
+                        <ComboBox 
+                                x:Name="ComboYears" 
+                                ItemsSource="{x:Bind YearList}" 
+                                PlaceholderText="Año"
+                                Width="150"
+                                SelectionChanged="ComboYears_SelectionChanged"/>
+                    </StackPanel>
 
-                    <ListView x:Name="StockList">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <Grid ColumnDefinitions="*,100,*,120,120" Padding="4">
-                                    <TextBlock Text="{Binding Name}"/>
-                                    <TextBlock Text="{Binding Quantity}" Grid.Column="1" TextAlignment="Center"/>
-                                    <TextBlock Text="{Binding Description}" Grid.Column="2"/>
-                                    <TextBlock Text="{Binding Cost}" Grid.Column="3" TextAlignment="Center"/>
-                                    <TextBlock Text="{Binding Price}" Grid.Column="4" TextAlignment="Center"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                    <StackPanel Orientation="Horizontal" Spacing="24">
+                        <TextBlock x:Name="DebitsYearCountText"/>
+                        <TextBlock x:Name="TotalDebitsYearText"/>
+                        <AppBarSeparator />
+                        <TextBlock x:Name="CreditsYearText"/>
+                        <TextBlock x:Name="TotalCreditsYearText"/>
+                    </StackPanel>
+
+                    <StackPanel 
+            Width="600" 
+            Height="Auto"
+            HorizontalAlignment="Left">
+                        <!-- HEADER -->
+                        <Grid ColumnDefinitions="80,*,*,100"
+              Padding="8"
+              Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+              BorderThickness="0,0,0,1"
+              BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
+                            <TextBlock Text="Mes" Grid.Column="0" FontWeight="Bold"/>
+                            <TextBlock Text="Entradas" Grid.Column="1" FontWeight="Bold"/>
+                            <TextBlock Text="Salidas" Grid.Column="2" FontWeight="Bold"/>
+                            <TextBlock Text="Total" Grid.Column="3" FontWeight="Bold"/>
+                        </Grid>
+                        <Border
+                Grid.Row="1"
+                Margin="0,10,0,0"
+                Padding="0"
+                CornerRadius="8"
+                Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                    HorizontalScrollBarVisibility="Auto">
+                                <ListView x:Name="CashFlowListYear">
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate x:DataType="models:CashFlowItem">
+                                            <Grid ColumnDefinitions="80,*,*,100">
+                                                <TextBlock Text="{Binding Date}"/>
+                                                <TextBlock Text="{Binding Debit,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                        Grid.Column="1"/>
+                                                <TextBlock Text="{Binding Credit,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                        Grid.Column="2"/>
+                                                <TextBlock Text="{Binding Total,Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                               Foreground="{x:Bind Total, Converter={StaticResource DebtColorConverter}, Mode=OneWay}"
+                                        Grid.Column="3"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
                 </StackPanel>
             </TabViewItem>
-
         </TabView>
-
     </Grid>
 </Page>
 

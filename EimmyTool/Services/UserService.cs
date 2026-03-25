@@ -14,7 +14,7 @@ namespace EimmyTool.Services
             using var conn = new SqliteConnection(_cs);
             conn.Open();
             var cmd = conn.CreateCommand();
-            cmd.CommandText = @"INSERT INTO Users (user_name, name, DNI, email, phone, address, password_hash, IsAdmin) 
+            cmd.CommandText = @"INSERT INTO Users (user_name, name, DNI, email, phone, address, password_hash, is_admin) 
                         VALUES (@user, @name, @dni, @email, @phone,@address, @pass, @admin)";
 
             cmd.Parameters.AddWithValue("@user", user.Username);

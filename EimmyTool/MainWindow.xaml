@@ -50,17 +50,25 @@
             </NavigationViewItem>
 
             <NavigationViewItem
-                Content="Devoluciones"
+                Content="Devolución de Clientes"
                 Tag="Returns">
                 <NavigationViewItem.Icon>
                     <FontIcon Glyph="&#xe8ab;"/>
                 </NavigationViewItem.Icon>
             </NavigationViewItem>
 
-            <!--<NavigationViewItem
+            <NavigationViewItem
+                Content="Devolución a Proveedores"
+                Tag="SuppliersReturns">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xe8ab;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
+
+            <NavigationViewItem
                 Content="Inventario"
                 Icon="List"
-                Tag="Inventory"/>-->
+                Tag="Inventory"/>
 
             <NavigationViewItem
                 Content="Reportes"
@@ -71,6 +79,14 @@
                 Content="Directorio"
                 Icon="Contact2"
                 Tag="Contacts"/>
+
+            <NavigationViewItem
+                Content="Gastos Generales"
+                Tag="GeneralExpenses">
+                <NavigationViewItem.Icon>
+                    <FontIcon Glyph="&#xe781;"/>
+                </NavigationViewItem.Icon>
+            </NavigationViewItem>
 
         </NavigationView.MenuItems>
 

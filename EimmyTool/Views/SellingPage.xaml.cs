@@ -4,10 +4,12 @@ using EimmyTool.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Printing;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -31,6 +33,7 @@ namespace EimmyTool.Views
         private int _currentStock;
         private decimal _currentPrice;
         private decimal _currentRetailPrice;
+        private string _currentProductName;
 
         public SellingPage()
         {
@@ -69,7 +72,7 @@ namespace EimmyTool.Views
             AddressBox.Text = client.Address;
             DebtBox.Text = client.Debt.ToString("C2");
         }
-        private void SkuBox_LostFocus(object sender, RoutedEventArgs e)
+        private async void SkuBox_LostFocus(object sender, RoutedEventArgs e)
         {
             var sku = SkuBox.Text?.Trim();
             if (string.IsNullOrEmpty(sku))
@@ -79,7 +82,7 @@ namespace EimmyTool.Views
 
             if (product == null)
             {
-                ProductNameBox.Text = "Product not found";
+                SkuBox.Text = "Product no encontrado";
                 _currentProductId = 0;
                 _currentStock = 0;
                 _currentPrice = 0;
@@ -87,17 +90,68 @@ namespace EimmyTool.Views
                 return;
             }
 
-            _currentProductId = product.Value.Id;
-            _currentStock = product.Value.Stock;
-            _currentPrice = product.Value.Price;
-            _currentRetailPrice = product.Value.RetailPrice;
-            ProductNameBox.Text = product.Value.Name;
-            QuantityBox.Text = "1";
-            StockText.Text = $"Stock disponible: {_currentStock}";
+            _currentProductId = product.Id;
+            _currentStock = product.Quantity;
+            _currentPrice = product.Price;
+            _currentRetailPrice = product.RetailPrice;
+            _currentProductName = product.Name;
 
-            UpdatePriceBox();
+            if(_currentStock <= 0)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Stock insuficiente",
+                    Content = $"Disponible: {_currentStock}",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+
+                await dialog.ShowAsync();
+                return;
+            }
+
+            bool isRetail = RetailPriceCheckBox.IsChecked ?? false;
+            decimal priceToApply = isRetail ? _currentRetailPrice : _currentPrice;
+            var existing = _items.FirstOrDefault(i => i.ProductId == _currentProductId);
+            if(existing == null)
+            {
+                _items.Add(new SaleItem
+                {
+                    ProductId = _currentProductId,
+                    SKU = sku,
+                    Name = _currentProductName,
+                    MaxQuantity = _currentStock,
+                    Quantity = 1,
+                    UnitPrice = _currentPrice
+                });
+            }
+            else if (existing.Quantity < existing.MaxQuantity)
+            {
+                // Increment if already there, up to the max allowed
+                existing.Quantity++;
+            }
+            else
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Límite alcanzado",
+                    Content = $"No puedes agregar más de {_currentStock} unidades.",
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot
+                };
+
+                await dialog.ShowAsync();
+                return;
+            }
+
+            SkuBox.Text = string.Empty;
+            await Task.Yield();
+            SkuBox.Focus(FocusState.Programmatic);
+            UpdateTotals();
+            SaveSaleButton.IsEnabled = true;
+            //UpdatePriceBox();
         }
-        private async void AddItem_Click(object sender, RoutedEventArgs e)
+        /*private async void AddItem_Click(object sender, RoutedEventArgs e)
         {
             decimal price;
             if (_currentProductId == 0)
@@ -114,20 +168,6 @@ namespace EimmyTool.Views
             var existingQty = _items
                 .Where(i => i.ProductId == _currentProductId)
                 .Sum(i => i.Quantity);
-
-            if (existingQty + qty > _currentStock)
-            {
-                var dialog = new ContentDialog
-                {
-                    Title = "Stock insuficiente",
-                    Content = $"Disponible: {_currentStock}\nEn carrito: {existingQty}",
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-
-                await dialog.ShowAsync();
-                return;
-            }
 
             _items.Add(new SaleItem
             {
@@ -150,7 +190,7 @@ namespace EimmyTool.Views
             _currentRetailPrice = 0;
             UpdateTotals();
             SaveSaleButton.IsEnabled = true;
-        }
+        }*/
         private void UpdateTotals()
         {
             SubtotalText.Text = Subtotal.ToString("C2");
@@ -265,9 +305,10 @@ namespace EimmyTool.Views
                 AddressBox.Text = "";
                 DebtBox.Text = "";
                 CreditSaleCheckBox.IsChecked = false;
-                RetailPriceCheckBox.IsChecked = false;
+                //RetailPriceCheckBox.IsChecked = false;
                 _items.Clear();
                 UpdateTotals();
+                SaveSaleButton.IsEnabled = false;
             }
             catch (Exception ex)
             {
@@ -478,17 +519,32 @@ namespace EimmyTool.Views
         {
             UpdatePriceBox();
         }
+        private void QuantityBox_ValueChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+        {
+            if (sender.DataContext is SaleItem item)
+            {
+                // Forzamos que la propiedad tenga el valor nuevo que viene en el evento
+                item.Quantity = (int)args.NewValue;
+
+                // Ahora sí, recalculamos todo
+                UpdateTotals();
+            }
+        }
         private void UpdatePriceBox()
         {
-            // Check if the CheckBox is checked (using the Name defined in XAML below)
-            if (RetailPriceCheckBox.IsChecked == true)
+            bool isRetail = RetailPriceCheckBox.IsChecked ?? false;
+
+            foreach (var item in _items)
             {
-                PriceBox.Text = _currentRetailPrice.ToString("C2");
+                // Necesitamos recuperar el producto original para saber su precio base/mayorista
+                // O si ya guardaste ambos precios en SaleItem, úsalos directamente
+                var product = _productService.GetBySku(item.SKU);
+                if (product != null)
+                {
+                    item.UnitPrice = isRetail ? product.RetailPrice : product.Price;
+                }
             }
-            else
-            {
-                PriceBox.Text = _currentPrice.ToString("C2");
-            }
+            UpdateTotals();
         }
         private void CreditSale_TwoState_Checked(object sender, RoutedEventArgs e) 
         {

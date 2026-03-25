@@ -1,21 +1,27 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 
 namespace EimmyTool.Models
 {
-    public class SaleItem
+    public class SaleItem : INotifyPropertyChanged
     {
         public int ProductId { get; set; }
         public string SKU { get; set; } = "";
         public string Name { get; set; } = "";
+        public int MaxQuantity { get; set; }
         private int _quantity;
         public int Quantity
         {
             get => _quantity;
             set
             {
-                _quantity = value;
-                OnPropertyChanged(nameof(Quantity));
-                OnPropertyChanged(nameof(Total));
+                int validatedValue = Math.Clamp(value, 0, MaxQuantity);
+                if (_quantity != validatedValue)
+                {
+                    _quantity = validatedValue;
+                    OnPropertyChanged(nameof(Quantity));
+                    OnPropertyChanged(nameof(Total));
+                }
             }
         }
         private decimal _unitPrice;

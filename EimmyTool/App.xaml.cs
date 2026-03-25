@@ -26,6 +26,7 @@ namespace EimmyTool
     /// </summary>
     public partial class App : Application
     {
+        public static FrameworkElement MainRoot { get; private set; }
         private Window? _window;
 
         /// <summary>
@@ -45,6 +46,9 @@ namespace EimmyTool
         {
             _window = new MainWindow();
             _window.Activate();
+
+            //MainRoot = _window.Content as FrameworkElement;
         }
+        //private Window _window;
     }
 }

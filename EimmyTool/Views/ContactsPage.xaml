@@ -12,9 +12,10 @@
     <Page.Resources>
         <converters:CurrencyFormatConverter x:Key="CurrencyConverter"/>
         <converters:DebtToBrushConverter x:Key="DebtColorConverter"/>
+        <converters:DateToLocalConverter x:Key="DateConverter"/>
     </Page.Resources>
     
-    <TabView Grid.Row="1" Margin="0,16,0,0">
+    <TabView x:Name="ContactsTabs" Grid.Row="1" Margin="0,16,0,0">
 
         <TabViewItem Header="Clientes">
             <StackPanel Spacing="16">
@@ -22,7 +23,7 @@
                     <StackPanel Orientation="Horizontal" Grid.Column="0">
                         <TextBlock Text="Cédula/NIT:" VerticalAlignment="Center" Margin="0,0,10,0" Width="80"/>
                         <TextBox x:Name="DniBoxClient" PlaceholderText="Ingrese la cédula / el NIT" 
-                     Width="250" LostFocus="DniBoxClient_LostFocus" KeyDown="DniBoxClient_KeyDown"/>
+                                Width="250" LostFocus="DniBoxClient_LostFocus" KeyDown="DniBoxClient_KeyDown"/>
 
                     <TextBlock x:Name="ClientText"
                                VerticalAlignment="Center" 
@@ -33,7 +34,7 @@
                     
 
                     <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
-                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                                HorizontalAlignment="Right" VerticalAlignment="Center">
                         <AppBarButton Icon="Add" Label="Nuevo Cliente" Click="AddClient_Click"/>
                         <AppBarButton Icon="Edit" Label="Editar" x:Name="BtnEditClient" Click="EditClient_Click" IsEnabled="False"/>
                         <AppBarSeparator />
@@ -46,7 +47,9 @@
                     </CommandBar>
                 </Grid>
                 <Grid>
-                    <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                    <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                          BorderThickness="0,0,0,1"
+                            BorderBrush="{ThemeResource DividerStrokeColorDefaultBrush}">
                         <TextBlock Text="Cédula/NIT" Grid.Column="0" FontWeight="Bold"/>
                         <TextBlock Text="Nombre" Grid.Column="1" FontWeight="Bold"/>
                         <TextBlock Text="Teléfono" Grid.Column="2" FontWeight="Bold"/>
@@ -54,9 +57,17 @@
                         <TextBlock Text="Dirección" Grid.Column="4" FontWeight="Bold"/>
                         <TextBlock Text="Deuda" Grid.Column="5" FontWeight="Bold"/>
                     </Grid>
-                    <ListView x:Name="ClientsList" Margin="0,40,0,0" SelectionMode="Single"
-                      SelectionChanged="ClientsList_SelectionChanged">
-                        
+                    <Border
+                        Grid.Row="1"
+                        Margin="0,40,0,0"
+                        Padding="0"
+                        CornerRadius="8"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                            HorizontalScrollBarVisibility="Auto">
+                            <ListView x:Name="ClientsList" Margin="0,0,0,0" SelectionMode="Single"
+                                SelectionChanged="ClientsList_SelectionChanged">
+
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Client">
                                 <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="4">
@@ -71,25 +82,9 @@
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                       <!-- <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="ContextFlyout">
-                                    <Setter.Value>
-                                        <MenuFlyout>
-                                            <MenuFlyoutItem Text="Editar Cliente" Icon="Edit" Click="EditClient_Click"/>
-                                            <MenuFlyoutItem Text="Ver Historial" Icon="Clock" Click="ViewHistory_Click"/>
-                                            <MenuFlyoutItem Text="Pagar Deuda" Click="PayDebt_Click">
-                                                <MenuFlyoutItem.Icon>
-                                                    <FontIcon Glyph="&#xe8c7;" />
-                                                </MenuFlyoutItem.Icon>
-                                            </MenuFlyoutItem>
-                                        </MenuFlyout>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListView.ItemContainerStyle> -->
                     </ListView>
+                        </ScrollViewer>
+                    </Border>
                 </Grid>
             </StackPanel>
         </TabViewItem>
@@ -108,9 +103,16 @@
                                     Foreground="Gray"/>
                     </StackPanel>
                     <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
-                    HorizontalAlignment="Right" VerticalAlignment="Center">
+                                HorizontalAlignment="Right" VerticalAlignment="Center">
                         <AppBarButton Icon="Add" Label="Nuevo Proveedor" Click="AddSupplier_Click"/>
-                        <AppBarButton Icon="Edit" Label="Editar Proveedor" Click="EditSupplier_Click"/>
+                        <AppBarButton Icon="Edit" Label="Editar" x:Name="BtnEditSupplier" Click="EditSupplier_Click" IsEnabled="False"/>
+                        <AppBarSeparator />
+                        <AppBarButton Icon="Clock" Label="Historial" x:Name="BtnHistorySupplier" Click="ViewHistorySupplier_Click" IsEnabled="False"/>
+                        <AppBarButton Label="Pagar Deuda" x:Name="BtnPayDebtSupplier" Click="PayDebtSupplier_Click" IsEnabled="False">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xe8c7;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
                     </CommandBar>
                 </Grid>
                 <Grid>
@@ -122,7 +124,16 @@
                         <TextBlock Text="Dirección" Grid.Column="4" FontWeight="Bold"/>
                         <TextBlock Text="Deuda" Grid.Column="5" FontWeight="Bold"/>
                     </Grid>
-                    <ListView x:Name="SuppliersList" Margin="0,40,0,0">
+                    <Border
+    Grid.Row="1"
+    Margin="0,40,0,0"
+    Padding="0"
+    CornerRadius="8"
+    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                    HorizontalScrollBarVisibility="Auto">
+                            <ListView x:Name="SuppliersList" Margin="0,0,0,0" SelectionMode="Single"
+                        SelectionChanged="SuppliersList_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Client">
                                 <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="4">
@@ -138,6 +149,8 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                        </ScrollViewer>
+                    </Border>
                 </Grid>
             </StackPanel>
         </TabViewItem>
@@ -158,7 +171,16 @@
                     <CommandBar Grid.Column="1" Background="Transparent" DefaultLabelPosition="Right" 
                     HorizontalAlignment="Right" VerticalAlignment="Center">
                         <AppBarButton Icon="Add" Label="Nuevo Usuario" Click="AddUser_Click"/>
-                        <AppBarButton Icon="Edit" Label="Editar Usuario" Click="EditUser_Click"/>
+                        <AppBarButton Icon="Edit" Label="Editar Usuario" x:Name="BtnEditUser" Click="EditUser_Click" IsEnabled="False"/>
+                        <AppBarSeparator />
+                        <AppBarButton Icon="Clock" Label="Historial" x:Name="BtnHistoryUser" Click="ViewHistoryUser_Click" IsEnabled="False"/>
+                        <AppBarButton Icon="Permissions" Label="Cambiar Rol" x:Name="BtnRolUser" Click="RolChangeUser_Click" IsEnabled="False"/>
+                        <AppBarButton Icon="OtherUser" Label="Cambiar Estado" x:Name="BtnStatusUser" Click="StatusChangeUser_Click" IsEnabled="False"/>
+                        <AppBarButton Label="Pagar Salario" x:Name="BtnPayUserSalary" Click="PayUserSalary_Click" IsEnabled="False">
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xe8c7;" />
+                            </AppBarButton.Icon>
+                        </AppBarButton>
                     </CommandBar>
                 </Grid>
                 <Grid>
@@ -172,7 +194,16 @@
                         <TextBlock Text="Rol" Grid.Column="6" FontWeight="Bold"/>
                         <TextBlock Text="Estado" Grid.Column="7" FontWeight="Bold" TextAlignment="Center"/>
                     </Grid>
-                    <ListView x:Name="UsersList" Margin="0,40,0,0">
+                    <Border
+    Grid.Row="1"
+    Margin="0,40,0,0"
+    Padding="0"
+    CornerRadius="8"
+    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                    HorizontalScrollBarVisibility="Auto">
+                            <ListView x:Name="UsersList" Margin="0,0,0,0" SelectionMode="Single"
+                        SelectionChanged="UsersList_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:User">
                                 <Grid ColumnDefinitions="100,*,*,*,*,*,*,100" Padding="4">
@@ -188,8 +219,64 @@
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
+                        </ScrollViewer>
+                    </Border>
                 </Grid>
             </StackPanel>
+        </TabViewItem>
+        
+        <TabViewItem x:Name="HistoryTab" Header="Historial de Transacciones">
+            
+            <Grid RowDefinitions="Auto,*" ColumnSpacing="20">
+                        
+                <Grid ColumnDefinitions="Auto, *" Margin="0,5" Background="WhiteSmoke">
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <TextBlock Name="Name" VerticalAlignment="Center" Margin="100,0,10,0" Width="80" FontWeight="Bold"/>
+                        <TextBlock Name="DNI" VerticalAlignment="Center" Margin="0,0,10,0" Width="80"/>
+                    </StackPanel>
+                </Grid>
+                <Grid Grid.Row="1">
+                            
+                    <Grid ColumnDefinitions="150,*,*,*,*,100" Padding="8" Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                        <TextBlock Text="Fecha" Grid.Column="0" FontWeight="Bold"/>
+                        <TextBlock Text="Descripcion" Grid.Column="1" FontWeight="Bold"/>
+                        <TextBlock Text="Factura #" Grid.Column="2" FontWeight="Bold"/>
+                        <TextBlock Text="Cantidad" Grid.Column="3" FontWeight="Bold"/>
+                        <TextBlock Text="Pagado" Grid.Column="4" FontWeight="Bold"/>
+                        <TextBlock Text="Total Factura" Grid.Column="5" FontWeight="Bold"/>
+                    </Grid>
+                    <Border
+                        Grid.Row="1"
+                        Margin="0,40,0,0"
+                        Padding="0"
+                        CornerRadius="8"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                            HorizontalScrollBarVisibility="Auto">
+                            <ListView x:Name="MovementsList" Margin="0,0,0,0">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="models:Movement">
+                                        <Grid ColumnDefinitions="150,*,*,*,*,100" Padding="4">
+                                            <TextBlock Text="{Binding Date, Converter={StaticResource DateConverter}, Mode=OneWay}"/>
+                                            <TextBlock Text="{Binding Description}" Grid.Column="1"/>
+                                            <TextBlock Text="{Binding Invoice}" Grid.Column="2"/>
+                                            <TextBlock Text="{Binding Quantity}" Grid.Column="3"/>
+                                            <TextBlock Text="{Binding Paid, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" 
+                                                        Foreground="{x:Bind Total, Converter={StaticResource DebtColorConverter}, Mode=OneWay}"
+                                                        Grid.Column="4" />
+                                            <TextBlock Text="{Binding Total, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" 
+                                                        Foreground="{x:Bind Total, Converter={StaticResource DebtColorConverter}, Mode=OneWay}"
+                                                        Grid.Column="5"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </Grid>
+                
+            
         </TabViewItem>
 
     </TabView>

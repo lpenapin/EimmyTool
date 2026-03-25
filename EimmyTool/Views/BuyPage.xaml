@@ -168,86 +168,85 @@
 
                     <!-- LIST -->
 
-                        <ListView x:Name="ItemsList">
-                            <ListView.ItemTemplate>
-                                <DataTemplate x:DataType="models:BuyItem">
-                                    <Grid ColumnDefinitions="*,2*,*,*,*" Padding="4">
-                                        <!-- Remove -->
-                                        <Button
-                                            Grid.Column="0"
-                                            Content="🗑"
-                                            Click="RemoveItem_Click"
-                                            Tag="{x:Bind}"/>
-                                        <TextBlock Text="{x:Bind Name}" Grid.Column="1" />
-                                        <TextBlock Text="{x:Bind Quantity}" Grid.Column="2"/>
-                                        <TextBlock Text="{x:Bind UnitCost, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
-                                                   Grid.Column="3"/>
-                                        <TextBlock Text="{x:Bind Total, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
-                                                   Grid.Column="4"/>
+                    <ListView x:Name="ItemsList">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="models:BuyItem">
+                                <Grid ColumnDefinitions="*,2*,*,*,*" Padding="4">
+                                    <!-- Remove -->
+                                    <Button
+                                        Grid.Column="0"
+                                        Content="🗑"
+                                        Click="RemoveItem_Click"
+                                        Tag="{x:Bind}"/>
+                                    <TextBlock Text="{x:Bind Name}" Grid.Column="1" />
+                                    <TextBlock Text="{x:Bind Quantity}" Grid.Column="2"/>
+                                    <TextBlock Text="{x:Bind UnitCost, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                Grid.Column="3"/>
+                                    <TextBlock Text="{x:Bind Total, Converter={StaticResource CurrencyConverter}, Mode=OneWay}"
+                                                Grid.Column="4"/>
                                         
-                                    </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
 
 
-                        <!-- TOTALS -->
-                        <Border 
-    BorderBrush="Gray" 
-    BorderThickness="1" 
-    CornerRadius="4" 
-    Padding="12" 
-    Margin="0,16,20,0" 
-    HorizontalAlignment="Right">
-                            <Grid
-                        Margin="0,16,0,0"
+                    <!-- TOTALS -->
+                    <Border 
+                        BorderBrush="Gray" 
+                        BorderThickness="1" 
+                        CornerRadius="4" 
+                        Padding="12" 
+                        Margin="0,16,20,0" 
                         HorizontalAlignment="Right">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="120"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid
+                            Margin="0,16,0,0"
+                            HorizontalAlignment="Right">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                        <TextBlock Text="Subtotal:" Grid.Row="0" Grid.Column="0"/>
-                        <TextBlock x:Name="SubtotalText" Grid.Column="1" TextAlignment="Right"/>
+                            <TextBlock Text="Subtotal:" Grid.Row="0" Grid.Column="0"/>
+                            <TextBlock x:Name="SubtotalText" Grid.Column="1" TextAlignment="Right"/>
 
-                                <TextBlock Text="Descuento (%)" Grid.Row="1" Grid.Column="0"/>
-                        <TextBox
-                            x:Name="TaxBox"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Text="0"
-                            TextAlignment="Right"
-                            TextChanged="TaxBox_TextChanged"/>
+                                    <TextBlock Text="Descuento (%)" Grid.Row="1" Grid.Column="0"/>
+                            <TextBox
+                                x:Name="TaxBox"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                Text="0"
+                                TextAlignment="Right"
+                                TextChanged="TaxBox_TextChanged"/>
 
-                        <TextBlock Text="Tax Amount" Grid.Row="2" Grid.Column="0"/>
-                        <TextBlock
-                            x:Name="TaxAmountText"
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            TextAlignment="Right"/>
+                            <TextBlock Text="Tax Amount" Grid.Row="2" Grid.Column="0"/>
+                            <TextBlock
+                                x:Name="TaxAmountText"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                TextAlignment="Right"/>
 
-                        <TextBlock
-                            Text="TOTAL"
-                            FontWeight="SemiBold"
-                            Grid.Row="3"/>
+                            <TextBlock
+                                Text="TOTAL"
+                                FontWeight="SemiBold"
+                                Grid.Row="3"/>
 
-                        <TextBlock
-                            x:Name="TotalText"
-                            Grid.Row="3"
-                            Grid.Column="1"
-                            FontWeight="SemiBold"
-                            TextAlignment="Right"/>
-
-                    </Grid>
-                        </Border>
-                    </StackPanel>
+                            <TextBlock
+                                x:Name="TotalText"
+                                Grid.Row="3"
+                                Grid.Column="1"
+                                FontWeight="SemiBold"
+                                TextAlignment="Right"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
 
             </Grid>
             </ScrollViewer>

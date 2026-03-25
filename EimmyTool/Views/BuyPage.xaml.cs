@@ -86,12 +86,12 @@ namespace EimmyTool.Views
             }
 
             _isNewProduct = false;
-            _currentProductId = product.Value.Id;
-            _currentStock = product.Value.Stock;
-            ProductNameBox.Text = product.Value.Name;
-            CostBox.Text = product.Value.Cost.ToString("N2");
-            PriceBox.Text = product.Value.Price.ToString("N2");
-            RetailPriceBox.Text = product.Value.RetailPrice.ToString("N2");
+            _currentProductId = product.Id;
+            _currentStock = product.Quantity;
+            ProductNameBox.Text = product.Name;
+            CostBox.Text = product.Cost.ToString("N2");
+            PriceBox.Text = product.Price.ToString("N2");
+            RetailPriceBox.Text = product.RetailPrice.ToString("N2");
             QuantityBox.Text = "1";
             StockText.Text = $"Stock disponible: {_currentStock}";
         }

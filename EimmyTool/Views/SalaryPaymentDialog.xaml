@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ContentDialog
+    x:Class="EimmyTool.Views.SalaryPaymentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EimmyTool.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:converters="using:EimmyTool.Converters"
+    Title="Procesar Salario"
+    PrimaryButtonText="Pagar"
+    SecondaryButtonText="Cancelar"
+    DefaultButton="Primary">
+    <ContentDialog.Resources>
+        <converters:CurrencyFormatConverter x:Key="CurrencyConverter"/>
+    </ContentDialog.Resources>
+
+    <StackPanel Spacing="12" Margin="0,10,0,0">
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock Text="Empleado:" FontWeight="Bold"/>
+            <TextBlock x:Name="EmployeeNameText" Text="{x:Bind User.Name, Mode=OneWay}"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Spacing="5">
+            <TextBlock Text="DNI:" FontWeight="Bold"/>
+            <TextBlock x:Name="EmployeeDniText" Text="{x:Bind User.DNI, Mode=OneWay}"/>
+        </StackPanel>
+
+        <MenuFlyoutSeparator/>
+
+        <NumberBox x:Name="HoursInput"
+                   Header="Horas Trabajadas"
+                   PlaceholderText="0"
+                   Value="{x:Bind HoursWorked, Mode=TwoWay}"
+                   ValueChanged="Input_ValueChanged"
+                   Minimum="0" 
+                   SpinButtonPlacementMode="Inline"
+                   SmallChange="1" />
+
+        <NumberBox x:Name="CostInput"
+                   Header="Costo por Hora"
+                   PlaceholderText="$0.00"
+                   Value="{x:Bind CostPerHour, Mode=TwoWay}"
+                   ValueChanged="Input_ValueChanged"
+                   Minimum="0" 
+                   SpinButtonPlacementMode="Inline"
+                   SmallChange="1000" />
+
+        <MenuFlyoutSeparator/>
+
+        <StackPanel Orientation="Horizontal" Spacing="5" VerticalAlignment="Center">
+            <TextBlock Text="Salario Total:" FontWeight="Bold" FontSize="16"/>
+            <TextBlock x:Name="TotalSalaryText" Text="$0.00" FontWeight="SemiBold" FontSize="16" Foreground="Green"/>
+        </StackPanel>
+
+    </StackPanel>
+
+</ContentDialog>

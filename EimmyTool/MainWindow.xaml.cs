@@ -67,6 +67,14 @@ namespace EimmyTool
                     case "Returns":
                         RootFrame.Navigate(typeof(Views.ReturnPage));
                         break;
+
+                    case "SuppliersReturns":
+                        RootFrame.Navigate(typeof(Views.ReturnSuppliersPage));
+                        break;
+
+                    case "GeneralExpenses":
+                        RootFrame.Navigate(typeof(Views.GeneralExpensesPage));
+                        break;
                 }
             }
         }

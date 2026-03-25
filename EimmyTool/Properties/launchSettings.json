@@ -1,10 +1,11 @@
 {
   "profiles": {
-    "EimmyTool (Package)": {
-      "commandName": "MsixPackage"
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
     },
-    "EimmyTool (Unpackaged)": {
-      "commandName": "Project"
+    "Profile 1": {
+      "commandName": "MsixPackage"
     }
   }
 }

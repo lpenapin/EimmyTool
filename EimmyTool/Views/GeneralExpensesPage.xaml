@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EimmyTool.Views.GeneralExpensesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EimmyTool.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:converters="using:EimmyTool.Converters"
+    xmlns:notations="using:Windows.Globalization.NumberFormatting">
+
+    <Grid>
+        <!-- TITLE -->
+        <StackPanel Orientation="Horizontal" Margin="0,5" Spacing="20">
+            <TextBlock
+            Text="Gastos Generales"
+            FontSize="28"
+            FontWeight="SemiBold"/>
+        </StackPanel>
+
+        <Border
+            BorderBrush="Gray" 
+            Margin="30,60,0,0"
+            VerticalAlignment="Top"
+            HorizontalAlignment="Left"
+            Width="400"
+            Height="Auto"
+            BorderThickness="1"
+            Grid.Row="1"
+            Padding="16"
+            CornerRadius="8"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+
+            <StackPanel Spacing="30" Orientation="Vertical">
+                <DatePicker
+                    x:Name="ExpenseDate"
+                    Header="Fecha"
+                    HorizontalAlignment="Center"/>
+                <TextBox 
+                    x:Name="InvoiceRefBox" 
+                    Header="Recibo" 
+                    Width="300"
+                    HorizontalAlignment="Stretch"/>
+                <TextBox
+                    x:Name="DetailsBox" 
+                    Header="Detalle" 
+                    Width="300"
+                    HorizontalAlignment="Stretch"/>
+                <NumberBox
+                    x:Name="PriceBox" 
+                    Header="Total Factura" 
+                    Width="300"
+                    HorizontalAlignment="Stretch">
+                    <NumberBox.NumberFormatter>
+                    <notations:DecimalFormatter 
+                        FractionDigits="2" 
+                        IsGrouped="True" />
+                    </NumberBox.NumberFormatter>
+                </NumberBox>
+                <TextBlock 
+                    x:Name="ErrorMessage" 
+                   Text="Por favor, complete todos los campos." 
+                   Foreground="Red" 
+                   FontSize="12" 
+                   TextWrapping="Wrap" 
+                   Visibility="Collapsed" 
+                   HorizontalAlignment="Center"/>
+                <StackPanel 
+                    Spacing="10" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center">
+                    <Button
+                        Content="Guardar"
+                        Width="100"
+                        Click="SaveButton_Click"
+                        HorizontalAlignment="Stretch"
+                        Style="{StaticResource AccentButtonStyle}"/>
+                    <Button
+                        Content="Cancelar"
+                        Width="100"
+                        Click="Cancel_Click"
+                        HorizontalAlignment="Stretch"/>
+                </StackPanel>
+            </StackPanel>
+            
+
+        </Border>
+    </Grid>
+</Page>
