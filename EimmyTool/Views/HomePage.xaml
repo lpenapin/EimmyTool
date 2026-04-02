@@ -17,7 +17,7 @@
                 FontSize="16"
                 Opacity="0.7"/>
 
-            <Image Source="/Assets/eimmy_logo.jpeg" Height="500" />
+            <Image Source="/Assets/eimmy_logo.jpeg" Height="500" HorizontalAlignment="Left" />
 
         </StackPanel>
     </Grid>

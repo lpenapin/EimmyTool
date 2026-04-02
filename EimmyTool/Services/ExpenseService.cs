@@ -25,7 +25,7 @@ namespace EimmyTool.Services
             cmd.Parameters.AddWithValue("@details", expense.Details);
             cmd.Parameters.AddWithValue("@total", expense.Total);
             cmd.Parameters.AddWithValue("@date", expense.Date);
-            cmd.Parameters.AddWithValue("@user_id", 1);//update later
+            cmd.Parameters.AddWithValue("@user_id", User.CurrentUser.Id);//update later
 
             return Convert.ToInt32(cmd.ExecuteScalar());
         }
@@ -39,7 +39,7 @@ namespace EimmyTool.Services
                 (type, detail, value, reference_table, reference_id, user_id)
                 VALUES ('CREDITO', 'Gasto General', @value, 'GeneralExpenses', @ref_id, @user)
             """;
-            cmd.Parameters.AddWithValue("@user", 1); //update later
+            cmd.Parameters.AddWithValue("@user", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@value", total);
             cmd.Parameters.AddWithValue("@ref_id", Id);
 

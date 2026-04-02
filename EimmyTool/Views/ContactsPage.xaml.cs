@@ -1,5 +1,6 @@
 ﻿using EimmyTool.Infrastructure;
 using EimmyTool.Models;
+using EimmyTool.Security;
 using EimmyTool.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.UI.Xaml;
@@ -162,7 +163,6 @@ namespace EimmyTool.Views
             var txtEmail = new TextBox { Header = "Correo" };
             var txtPhone = new TextBox { Header = "Teléfono" };
             var txtAddress = new TextBox { Header = "Dirección" };
-            //var txtPass = new PasswordBox { Header = "Contraseña" };
             var chkAdmin = new CheckBox { Content = "Es Administrador", Margin = new Thickness(0, 10, 0, 0) };
 
             var panel = new StackPanel { Children = { txtUser, txtName, txtDNI, txtEmail, txtPhone, txtAddress, chkAdmin } };
@@ -186,6 +186,7 @@ namespace EimmyTool.Views
                     Email = txtEmail.Text,
                     Phone = txtPhone.Text,
                     Address = txtAddress.Text,
+                    PasswordHash = User.HashPassword("Eimmy123"),
                     IsAdmin = chkAdmin.IsChecked == true ? 1 : 0,
                 };
 
@@ -375,7 +376,7 @@ namespace EimmyTool.Views
                 user.Username = txtUserName.Text;
                 try
                 {
-                    UpdateUser(user);
+                    _userService.UpdateUser(user);
                 }
                 catch (Exception ex)
                 {
@@ -577,6 +578,7 @@ namespace EimmyTool.Views
             if (UsersList.SelectedItem is User selectedUser)
             {
                 BtnEditUser.IsEnabled = true;
+                BtnResetPass.IsEnabled = true;
                 BtnHistoryUser.IsEnabled = true;
                 BtnRolUser.IsEnabled = true; //Change later, if current user is admin enable
                 BtnStatusUser.IsEnabled = true; //Change later, if current user is admin enable
@@ -599,6 +601,7 @@ namespace EimmyTool.Views
             {
                 // Disable buttons if nothing is selected
                 BtnEditUser.IsEnabled = false;
+                BtnResetPass.IsEnabled = false;
                 BtnHistoryUser.IsEnabled = false;
                 BtnRolUser.IsEnabled = false;
                 BtnStatusUser.IsEnabled = false;
@@ -687,7 +690,7 @@ namespace EimmyTool.Views
             """;
 
             cmd.Parameters.AddWithValue("@clientId", clientId);
-            cmd.Parameters.AddWithValue("@userId", 1); // TODO: replace with logged user
+            cmd.Parameters.AddWithValue("@userId", User.CurrentUser.Id); // TODO: replace with logged user
             cmd.Parameters.AddWithValue("@paid", abono);
 
             return Convert.ToInt32(cmd.ExecuteScalar());
@@ -701,7 +704,7 @@ namespace EimmyTool.Views
                 (type, detail, value, reference_table, reference_id, user_id)
                 VALUES ('DEBITO', 'Abono deuda cliente', @value, 'PayDebtInvoices', @ref_id, @user)
             """;
-            cmd.Parameters.AddWithValue("@user", 1); //update later
+            cmd.Parameters.AddWithValue("@user", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@value", abono);
             cmd.Parameters.AddWithValue("@ref_id", invoiceId);
 
@@ -802,7 +805,7 @@ namespace EimmyTool.Views
             """;
 
             cmd.Parameters.AddWithValue("@supplierId", supplierId);
-            cmd.Parameters.AddWithValue("@userId", 1); // TODO: replace with logged user
+            cmd.Parameters.AddWithValue("@userId", User.CurrentUser.Id); // TODO: replace with logged user
             cmd.Parameters.AddWithValue("@paid", abono);
 
             return Convert.ToInt32(cmd.ExecuteScalar());
@@ -816,7 +819,7 @@ namespace EimmyTool.Views
                 (type, detail, value, reference_table, reference_id, user_id)
                 VALUES ('CREDITO', 'Abono deuda proveedor', @value, 'PayCreditInvoices ', @ref_id, @user)
             """;
-            cmd.Parameters.AddWithValue("@user", 1); //update later
+            cmd.Parameters.AddWithValue("@user", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@value", abono);
             cmd.Parameters.AddWithValue("@ref_id", invoiceId);
 
@@ -940,7 +943,7 @@ namespace EimmyTool.Views
                 (type, detail, value, reference_table, reference_id, user_id)
                 VALUES ('CREDITO', 'Pago Salario', @value, 'Salaries', @ref_id, @user)
             """;
-            cmd.Parameters.AddWithValue("@user", 1); //update later
+            cmd.Parameters.AddWithValue("@user", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@value", abono);
             cmd.Parameters.AddWithValue("@ref_id", invoiceId);
 
@@ -973,6 +976,23 @@ namespace EimmyTool.Views
                 // Call your printing logic here
                 //PrintInvoice(invoiceNo, products, total, debt);
             }*/
+        }
+        private async void ResetPass_Click(object sender, RoutedEventArgs e)
+        {
+            var user = _selectedUser[0];
+            int userId = user.Id;
+            string pass = User.HashPassword("Eimmy123");
+            
+            try
+            {
+                _userService.UpdateUserPassword(userId, pass, 1);
+            }
+            catch (Exception ex)
+            {
+                // Always wrap DB calls in try-catch to handle locked files or syntax errors
+                Debug.WriteLine($"Database error: {ex.Message}");
+            }
+            LoadData();
         }
     }
 }

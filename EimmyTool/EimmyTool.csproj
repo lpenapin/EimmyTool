@@ -14,12 +14,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Content Remove="Assets\Etool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Assets\Etool_ico.scale-100.jpeg" />
+    <None Remove="Assets\Etool_ico.scale-200.jpeg" />
+    <None Remove="Assets\Etool_ico.scale-400.jpeg" />
+    <None Remove="Assets\logo_E-Tool.scale-100.jpeg" />
+    <None Remove="Assets\logo_E-Tool.scale-200.jpeg" />
+    <None Remove="Views\AboutPage.xaml" />
     <None Remove="Views\ContactsPage.xaml" />
     <None Remove="Views\DebtPaymentDialog.xaml" />
     <None Remove="Views\GeneralExpensesPage.xaml" />
     <None Remove="Views\HomePage.xaml" />
     <None Remove="Views\InventoryPage.xaml" />
-    <None Remove="Views\LoginPage.xaml" />
     <None Remove="Views\ReportsPage.xaml" />
     <None Remove="Views\ReturnPage.xaml" />
     <None Remove="Views\ReturnSuppliersPage.xaml" />
@@ -28,13 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Etool_ico.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -110,12 +112,18 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\LoginPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Folder Include="AppPackages\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="AppPackages\" />
+    <None Include="..\..\Imagenes\Etool_ico.jpeg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\AboutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 
   <!--
@@ -143,5 +151,8 @@
     <AppxBundle>Never</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxPackageDir>Z:\E_tool\</AppxPackageDir>
+    <ApplicationIcon>Etool_ico.ico</ApplicationIcon>
+    <PackageIcon>Etool_ico.jpeg</PackageIcon>
+    <RepositoryUrl>https://github.com/lpenapin/EimmyTool</RepositoryUrl>
   </PropertyGroup>
 </Project>

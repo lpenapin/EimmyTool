@@ -16,7 +16,7 @@
     </Page.Resources>
     
     <TabView x:Name="ContactsTabs" Grid.Row="1" Margin="0,16,0,0">
-
+        <!--CLIENTES-->
         <TabViewItem Header="Clientes">
             <StackPanel Spacing="16">
                 <Grid ColumnDefinitions="Auto, *" Margin="0,5">
@@ -88,7 +88,7 @@
                 </Grid>
             </StackPanel>
         </TabViewItem>
-
+        <!--PROVEEDORES-->
         <TabViewItem Header="Proveedores">
             <StackPanel Spacing="16">
                 <Grid ColumnDefinitions="Auto, *" Margin="0,5">
@@ -125,15 +125,15 @@
                         <TextBlock Text="Deuda" Grid.Column="5" FontWeight="Bold"/>
                     </Grid>
                     <Border
-    Grid.Row="1"
-    Margin="0,40,0,0"
-    Padding="0"
-    CornerRadius="8"
-    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                        Grid.Row="1"
+                        Margin="0,40,0,0"
+                        Padding="0"
+                        CornerRadius="8"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                    HorizontalScrollBarVisibility="Auto">
+                            HorizontalScrollBarVisibility="Auto">
                             <ListView x:Name="SuppliersList" Margin="0,0,0,0" SelectionMode="Single"
-                        SelectionChanged="SuppliersList_SelectionChanged">
+                                SelectionChanged="SuppliersList_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:Client">
                                 <Grid ColumnDefinitions="180,*,*,*,200,80" Padding="4">
@@ -154,7 +154,7 @@
                 </Grid>
             </StackPanel>
         </TabViewItem>
-
+        <!--USUARIOS-->
         <TabViewItem Header="Usuarios">
             <StackPanel Spacing="16">
                 <Grid ColumnDefinitions="Auto, *" Margin="0,5">
@@ -172,6 +172,11 @@
                     HorizontalAlignment="Right" VerticalAlignment="Center">
                         <AppBarButton Icon="Add" Label="Nuevo Usuario" Click="AddUser_Click"/>
                         <AppBarButton Icon="Edit" Label="Editar Usuario" x:Name="BtnEditUser" Click="EditUser_Click" IsEnabled="False"/>
+                        <AppBarButton Label="Resetear contraseña" x:Name="BtnResetPass" Click="ResetPass_Click" IsEnabled="False" >
+                            <AppBarButton.Icon>
+                                <FontIcon Glyph="&#xee7e;"/>
+                            </AppBarButton.Icon>
+                        </AppBarButton>
                         <AppBarSeparator />
                         <AppBarButton Icon="Clock" Label="Historial" x:Name="BtnHistoryUser" Click="ViewHistoryUser_Click" IsEnabled="False"/>
                         <AppBarButton Icon="Permissions" Label="Cambiar Rol" x:Name="BtnRolUser" Click="RolChangeUser_Click" IsEnabled="False"/>
@@ -195,15 +200,15 @@
                         <TextBlock Text="Estado" Grid.Column="7" FontWeight="Bold" TextAlignment="Center"/>
                     </Grid>
                     <Border
-    Grid.Row="1"
-    Margin="0,40,0,0"
-    Padding="0"
-    CornerRadius="8"
-    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                        Grid.Row="1"
+                        Margin="0,40,0,0"
+                        Padding="0"
+                        CornerRadius="8"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                    HorizontalScrollBarVisibility="Auto">
+                            HorizontalScrollBarVisibility="Auto">
                             <ListView x:Name="UsersList" Margin="0,0,0,0" SelectionMode="Single"
-                        SelectionChanged="UsersList_SelectionChanged">
+                                SelectionChanged="UsersList_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="models:User">
                                 <Grid ColumnDefinitions="100,*,*,*,*,*,*,100" Padding="4">
@@ -224,7 +229,7 @@
                 </Grid>
             </StackPanel>
         </TabViewItem>
-        
+        <!--HISTORIAL-->
         <TabViewItem x:Name="HistoryTab" Header="Historial de Transacciones">
             
             <Grid RowDefinitions="Auto,*" ColumnSpacing="20">

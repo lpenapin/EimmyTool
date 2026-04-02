@@ -420,7 +420,7 @@ namespace EimmyTool.Views
             """;
 
             cmd.Parameters.AddWithValue("@clientId", clientId);
-            cmd.Parameters.AddWithValue("@userId", 1); // TODO: replace with logged user
+            cmd.Parameters.AddWithValue("@userId", User.CurrentUser.Id); // TODO: replace with logged user
             cmd.Parameters.AddWithValue("@total", GrandTotal);
             cmd.Parameters.AddWithValue("@paid_full", PaidFull);
             cmd.Parameters.AddWithValue("@paid", Paid);
@@ -484,7 +484,7 @@ namespace EimmyTool.Views
                 (user_id, product_id, quantity, movement_type, reference)
                 VALUES (@userid, @productId, @qty, 'VENTA', @ref)
             """;
-            cmd.Parameters.AddWithValue("@userid", 1); //update later
+            cmd.Parameters.AddWithValue("@userid", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@productId", item.ProductId);
             cmd.Parameters.AddWithValue("@qty", item.Quantity);
             cmd.Parameters.AddWithValue("@ref", invoiceId);
@@ -505,7 +505,7 @@ namespace EimmyTool.Views
                 (type, detail, value, reference_table, reference_id, user_id)
                 VALUES ('DEBITO', 'Venta', @value, 'SalesInvoices', @ref_id, @user)
             """;
-            cmd.Parameters.AddWithValue("@user", 1); //update later
+            cmd.Parameters.AddWithValue("@user", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@value", Paid);
             cmd.Parameters.AddWithValue("@ref_id", invoiceId);
 

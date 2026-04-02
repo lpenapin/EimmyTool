@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="EimmyTool.Views.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:EimmyTool.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer Margin="30">
+        <StackPanel Spacing="20" MaxWidth="800" HorizontalAlignment="Left">
+
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <Image Source="/Assets/E-Tool.png" Width="100" Height="100" VerticalAlignment="Center"/>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="E-Tool" Style="{StaticResource TitleTextBlockStyle}" FontSize="32"/>
+                    <TextBlock x:Name="VersionText" Text="Versión 1.0.0" Style="{StaticResource BodyTextBlockStyle}" Opacity="0.6"/>
+                </StackPanel>
+            </StackPanel>
+
+            <Rectangle Height="1" Fill="{ThemeResource SystemControlForegroundBaseLowBrush}" Margin="0,10"/>
+
+            <StackPanel Spacing="10">
+                <TextBlock Text="Información del Desarrollador" Style="{StaticResource SubtitleTextBlockStyle}"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon Glyph="&#xE77B;" FontSize="16"/>
+                    <TextBlock Text="Creador: Luis Peña" VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <FontIcon Glyph="&#xE715;" FontSize="16"/>
+                    <HyperlinkButton Content="Contactar Soporte: lpenapin@gmail.com" 
+                                     NavigateUri="mailto:lpenapin@gmail.com"
+                                     Padding="0"
+                                     VerticalAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Spacing="10" Margin="0,10,0,0">
+                <TextBlock Text="Sobre la Aplicación" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock TextWrapping="Wrap" 
+                           Text="EimmyTool es una solución integral diseñada para la gestión eficiente de ventas, inventario y reportes. Enfocada en optimizar los procesos de negocio con una interfaz moderna y fácil de usar." 
+                           MaxWidth="600"/>
+            </StackPanel>
+
+            <TextBlock Text="© 2026 Eimmy Teen's. Todos los derechos reservados." 
+                       Style="{StaticResource CaptionTextBlockStyle}" 
+                       Margin="0,30,0,0" 
+                       Opacity="0.5"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>

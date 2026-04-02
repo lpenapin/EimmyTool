@@ -101,7 +101,7 @@ namespace EimmyTool.Services
                     (user_id, product_id, quantity, movement_type)
                     VALUES (@userid, @productId, @qty, @reason)
                 """;
-            cmd.Parameters.AddWithValue("@userid", 1); //update later
+            cmd.Parameters.AddWithValue("@userid", User.CurrentUser.Id); //update later
             cmd.Parameters.AddWithValue("@productId", item);
             cmd.Parameters.AddWithValue("@qty", quantity);
             cmd.Parameters.AddWithValue("@reason", reason);

@@ -1,7 +1,9 @@
-﻿using EimmyTool.Models;
+﻿using EimmyTool.Infrastructure;
+using EimmyTool.Models;
 using Microsoft.Data.Sqlite;
 using System.Collections;
 using System.Collections.Generic;
+using Windows.System;
 
 namespace EimmyTool.Services
 {
@@ -9,7 +11,7 @@ namespace EimmyTool.Services
     {
         private readonly string _cs;
         public UserService(string connectionString) => _cs = connectionString;
-        public void Insert(User user)
+        public void Insert(Models.User user)
         {
             using var conn = new SqliteConnection(_cs);
             conn.Open();
@@ -23,14 +25,38 @@ namespace EimmyTool.Services
             cmd.Parameters.AddWithValue("@email", user.Email);
             cmd.Parameters.AddWithValue("@phone", user.Phone);
             cmd.Parameters.AddWithValue("@address", user.Address);
-            cmd.Parameters.AddWithValue("@pass", "password"); // Aquí deberías aplicar un Hash en el futuro
+            cmd.Parameters.AddWithValue("@pass", user.PasswordHash);
             cmd.Parameters.AddWithValue("@admin", user.IsAdmin);
 
             cmd.ExecuteNonQuery();
         }
-        public List<User> GetAll()
+        public void UpdateUser(Models.User user)
         {
-            var list = new List<User>();
+            using var conn = new SqliteConnection(_cs);
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                    UPDATE Users  
+                    SET name = @name,
+                        email = @email,
+                        phone = @phone,
+                        address = @address,
+                        DNI = @dni,
+                        user_name = @username
+                    WHERE id = @user
+                """;
+            cmd.Parameters.AddWithValue("@name", user.Name);
+            cmd.Parameters.AddWithValue("@email", user.Email);
+            cmd.Parameters.AddWithValue("@phone", user.Phone);
+            cmd.Parameters.AddWithValue("@address", user.Address);
+            cmd.Parameters.AddWithValue("@dni", user.DNI);
+            cmd.Parameters.AddWithValue("@user", user.Id);
+            cmd.Parameters.AddWithValue("@username", user.Username);
+            cmd.ExecuteNonQuery();
+        }
+        public List<Models.User> GetAll()
+        {
+            var list = new List<Models.User>();
             using var conn = new SqliteConnection(_cs);
             conn.Open();
             var cmd = conn.CreateCommand();
@@ -39,7 +65,7 @@ namespace EimmyTool.Services
             using var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
-                list.Add(new User
+                list.Add(new Models.User
                 {
                     Id = reader.GetInt32(0),
                     Username = reader.GetString(1),
@@ -54,7 +80,7 @@ namespace EimmyTool.Services
             }
             return list;
         }
-        public User? GetByDni(string dni)
+        public Models.User? GetByDni(string dni)
         {
             using var conn = new SqliteConnection(_cs);
             conn.Open();
@@ -72,7 +98,7 @@ namespace EimmyTool.Services
             if (!reader.Read())
                 return null;
 
-            return new User
+            return new Models.User
             {
                 Id = reader.GetInt32(0),
                 Username = reader.GetString(1),
@@ -86,6 +112,61 @@ namespace EimmyTool.Services
             };
 
             
+        }
+        public Models.User AuthenticateAndGetUser(string username, string password)
+        {
+            // Path to your SQLite DB
+            using var conn = new SqliteConnection(DatabaseConfig.ConnectionString);
+            conn.Open();
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = """
+                    SELECT id, user_name, name, is_admin,  reset_password
+                    FROM Users 
+                    WHERE user_name = @user AND password_hash = @pass AND is_active = 1
+                    """;
+
+            cmd.Parameters.AddWithValue("@user", username);
+            cmd.Parameters.AddWithValue("@pass", password); // Note: Use hashing in production!
+
+            using (var reader = cmd.ExecuteReader())
+            {
+                if (reader.Read())
+                {
+                    Models.User.CurrentUser = new Models.User
+                    {
+                        Id = reader.GetInt32(0),
+                        Username = reader.GetString(1),
+                        Name = reader.GetString(2),
+                        IsAdmin = reader.GetInt32(3),
+                        ResetPassword = reader.GetInt32(4),
+                    };
+                    return Models.User.CurrentUser;
+                }
+            }
+            return null;
+        }
+        public bool UpdateUserPassword(int userId, string Hpassword, int reset)
+        {
+            try
+            {
+                using var conn = new SqliteConnection(_cs);
+                conn.Open();
+                var cmd = conn.CreateCommand();
+                cmd.CommandText = """
+                Update Users 
+                SET password_hash = @hashedPass, 
+                    reset_password = @reset 
+                WHERE id = @id
+                """;
+                cmd.Parameters.AddWithValue("@id", userId);
+                cmd.Parameters.AddWithValue("@hashedPass", Hpassword);
+                cmd.Parameters.AddWithValue("@reset", reset);
+                return cmd.ExecuteNonQuery() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
