@@ -99,6 +99,7 @@ namespace EimmyTool.Views
         {
             // 1. Validate Inputs first (User must have typed a name and prices)
             if (string.IsNullOrWhiteSpace(ProductNameBox.Text)) return;
+            if (string.IsNullOrWhiteSpace(ProductDetailBox.Text)) return;
             if (!int.TryParse(QuantityBox.Text, out int qty) || qty <= 0) return;
             if (!decimal.TryParse(CostBox.Text, out decimal cost)) return;
             if (!decimal.TryParse(PriceBox.Text, out decimal price)) return;
@@ -110,7 +111,7 @@ namespace EimmyTool.Views
                 try
                 {
                     // Insert into DB immediately to get an ID
-                    _currentProductId = CreateNewProduct(SkuBox.Text, ProductNameBox.Text, cost, price, retail_price);
+                    _currentProductId = CreateNewProduct(SkuBox.Text, ProductNameBox.Text, ProductDetailBox.Text, cost, price, retail_price);
                     _isNewProduct = false; // Reset flag
                 }
                 catch (Exception ex)
@@ -537,15 +538,15 @@ namespace EimmyTool.Views
                 RetailPriceBox.Text = amount.ToString("N2");
             }
         }
-        private int CreateNewProduct(string sku, string name, decimal cost, decimal price, decimal retailPrice)
+        private int CreateNewProduct(string sku, string name, string description, decimal cost, decimal price, decimal retailPrice)
         {
             using var conn = new SqliteConnection(DatabaseConfig.ConnectionString);
             conn.Open();
             using var cmd = conn.CreateCommand();
 
             cmd.CommandText = """
-                INSERT INTO Products (SKU, name, cost_price, sale_price, retail_price, stock)
-                VALUES (@sku, @name, @cost, @price, @retail, 0);
+                INSERT INTO Products (SKU, name, description, cost_price, sale_price, retail_price, stock)
+                VALUES (@sku, @name, @description, @cost, @price, @retail, 0);
                 SELECT last_insert_rowid();
             """;
 
@@ -554,6 +555,7 @@ namespace EimmyTool.Views
             cmd.Parameters.AddWithValue("@cost", cost);
             cmd.Parameters.AddWithValue("@price", price);
             cmd.Parameters.AddWithValue("@retail", retailPrice);
+            cmd.Parameters.AddWithValue("@description", description);
 
             return Convert.ToInt32(cmd.ExecuteScalar());
         }

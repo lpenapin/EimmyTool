@@ -337,7 +337,6 @@ namespace EimmyTool.Infrastructure
         }
         private static void EnsureGlobalAdmin(SqliteConnection conn)
         {
-            conn.Open();
             var checkCmd = conn.CreateCommand();
             checkCmd.CommandText = "SELECT COUNT(*) FROM Users";
             long count = (long)checkCmd.ExecuteScalar();

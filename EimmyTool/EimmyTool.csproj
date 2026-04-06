@@ -12,6 +12,7 @@
     <WinUISDKReferences>false</WinUISDKReferences>
     <EnableMsixTooling>true</EnableMsixTooling>
     <Nullable>enable</Nullable>
+    <WindowsPackageType>None</WindowsPackageType>
   </PropertyGroup>
   <ItemGroup>
     <Content Remove="Assets\Etool.png" />
@@ -33,10 +34,6 @@
     <None Remove="Views\ReturnSuppliersPage.xaml" />
     <None Remove="Views\SalaryPaymentDialog.xaml" />
     <None Remove="Views\SellingPage.xaml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Etool_ico.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -115,7 +112,7 @@
     <Folder Include="AppPackages\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\Imagenes\Etool_ico.jpeg">
+    <None Update="Assets\E-Tool.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
@@ -148,11 +145,12 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
     <GenerateTestArtifacts>True</GenerateTestArtifacts>
-    <AppxBundle>Never</AppxBundle>
+    <AppxBundle>Auto</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxPackageDir>Z:\E_tool\</AppxPackageDir>
-    <ApplicationIcon>Etool_ico.ico</ApplicationIcon>
-    <PackageIcon>Etool_ico.jpeg</PackageIcon>
+    <ApplicationIcon>Assets\logo_E-Tool_ico.ico</ApplicationIcon>
+    <PackageIcon>E-Tool.png</PackageIcon>
     <RepositoryUrl>https://github.com/lpenapin/EimmyTool</RepositoryUrl>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
   </PropertyGroup>
 </Project>

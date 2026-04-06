@@ -88,7 +88,7 @@ namespace EimmyTool.Services
                 Price = reader.GetDecimal(3),
                 Cost = reader.GetDecimal(4),
                 RetailPrice = reader.GetDecimal(5),
-                Description = reader.GetString(6)
+                Description = reader.IsDBNull(6) ? "" : reader.GetString(6),
             };
         }
         public void InsertMovement(int item,int quantity, string reason)

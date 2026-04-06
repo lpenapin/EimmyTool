@@ -98,16 +98,25 @@
                                 Width="180"/>
 
                         </StackPanel>
-                        
 
-                        <TextBox
-                            x:Name="ProductNameBox"
-                            Header="Producto"
-                            IsReadOnly="True"/>
-                        <TextBlock
+
+                        <StackPanel Orientation="Horizontal" Spacing="12">
+                            <TextBox
+                                x:Name="ProductNameBox"
+                                Header="Producto"
+                                IsReadOnly="True"
+                                Width="180"/>
+                            <TextBlock
                                 x:Name="StockText"
                                 FontStyle="Italic"
                                 Foreground="Gray"/>
+
+                            <TextBox
+                                x:Name="ProductDetailBox"
+                                Header="Detalle"
+                                IsReadOnly="True"
+                                Width="180"/>
+                        </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Spacing="12">
 

@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
@@ -81,10 +82,25 @@ namespace EimmyTool
 
             foreach (var item in NavView.MenuItems.OfType<NavigationViewItem>())
             {
-                // Example: Only Admins see Reports and Inventory
-                if (item.Tag?.ToString() == "Reports" || item.Tag?.ToString() == "Inventory")
+                string tag = item.Tag?.ToString();
+
+                // Si NO es admin
+                if (!isAdmin)
                 {
-                    item.Visibility = isAdmin ? Visibility.Visible : Visibility.Collapsed;
+                    // Solo permitimos "Selling" y "Returns", el resto se colapsa
+                    if (tag == "Home" || tag == "Selling" || tag == "Returns")
+                    {
+                        item.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        item.Visibility = Visibility.Collapsed;
+                    }
+                }
+                else
+                {
+                    // Si es admin, nos aseguramos de que todo sea visible
+                    item.Visibility = Visibility.Visible;
                 }
             }
         }

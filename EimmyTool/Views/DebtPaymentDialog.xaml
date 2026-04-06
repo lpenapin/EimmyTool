@@ -18,7 +18,7 @@
 
     <StackPanel Spacing="12" Margin="0,10,0,0">
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock Text="Client:" FontWeight="Bold"/>
+            <TextBlock Text="Nombre:" FontWeight="Bold"/>
             <TextBlock x:Name="ClientNameText" Text="{x:Bind Client.Name, Mode=OneWay}"/>
         </StackPanel>
 
@@ -28,7 +28,7 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock Text="Current Debt:" FontWeight="Bold"/>
+            <TextBlock Text="Deuda Actual:" FontWeight="Bold"/>
             <TextBlock x:Name="CurrentDebtText" />
         </StackPanel>
 
@@ -40,7 +40,7 @@
                 Style="{StaticResource AccentButtonStyle}"/>
 
         <NumberBox x:Name="PaymentInput"
-                   Header="Value to Pay"
+                   Header="Valor a pagar"
                    PlaceholderText="$0.00"
                    Value="{x:Bind PaymentAmountDouble, Mode=TwoWay}"
                    ValueChanged="PaymentInput_ValueChanged"
