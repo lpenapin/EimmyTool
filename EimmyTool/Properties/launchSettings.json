@@ -6,6 +6,9 @@
     },
     "Profile 1": {
       "commandName": "MsixPackage"
+    },
+    "Profile 2": {
+      "commandName": "Project"
     }
   }
 }
