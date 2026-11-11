@@ -116,3 +116,59 @@ ALTER TABLE Clients_new RENAME TO Clients;
 
 COMMIT;
 PRAGMA foreign_keys = ON;
+
+
+--------------------------------------------------
+-- 1. MIGRATE 'SalesInvoices' TABLE
+--------------------------------------------------
+
+-- Create temporary mapping table for SalesInvoices
+CREATE TEMP TABLE SalesInvoicesIdMapping (
+    OldIntId INTEGER PRIMARY KEY,
+    NewUuid TEXT NOT NULL
+);
+
+-- Generate new GUIDs for each existing SalesInvoices record
+INSERT INTO SalesInvoicesIdMapping (OldIntId, NewUuid)
+SELECT 
+    id, 
+    lower(hex(randomblob(4))) || '-' || lower(hex(randomblob(2))) || '-4' || 
+    substr(lower(hex(randomblob(2))), 2) || '-a' || 
+    substr(lower(hex(randomblob(2))), 2) || '-' || 
+    lower(hex(randomblob(6)))
+FROM SalesInvoices;
+
+-- Create new SalesInvoices table with TEXT primary key
+CREATE TABLE SalesInvoices_new (
+    id TEXT PRIMARY KEY NOT NULL,
+    InvoiceNumber TEXT UNIQUE NOT NULL,
+    client_id TEXT NOT NULL,
+    user_id TEXT NOT NULL,
+    invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    paid_full INTEGER NOT NULL DEFAULT 1,
+    paid DECIMAL(18,2) DEFAULT 0,,
+    total DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (client_id) REFERENCES Clients(id),
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+-- Copy data using the mapping table
+INSERT INTO SalesInvoices_new (Id, InvoiceNumber, client_id, user_id, invoice_date,
+                                paid_full, paid, total)
+SELECT
+    sim.NewUuid,
+    CONCAT('INV-', @YearStr, '-', RIGHT('0000' + CAST(ROW_NUMBER() OVER (ORDER BY o.invoice_date) AS VARCHAR(4)), 4)),
+    cm.NewUuid AS client_id,
+    um.NewUuid AS user_id,
+    si.invoice_date,
+    si.paid_full,
+    si.paid,
+    si.total
+FROM SalesInvoices si
+JOIN SalesInvoicesIdMapping sim ON si.id = sim.OldIntId
+JOIN ClientIdMapping cm ON si.client_id = cm.OldIntId
+JOIN UserIdMapping um ON si.user_id = um.OldIntId
+
+-- Replace old table
+DROP TABLE SalesInvoices;
+ALTER TABLE SalesInvoices_new RENAME TO SalesInvoices;
