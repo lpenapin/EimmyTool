@@ -43,7 +43,7 @@ namespace EimmyTool.Services
             {
                 list.Add(new Client
                 {
-                    Id = reader.GetInt32(0),
+                    Id = reader.GetString(0),
                     Name = reader.GetString(1),
                     DNI = reader.GetString(2),
                     Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
@@ -75,7 +75,7 @@ namespace EimmyTool.Services
 
             return new Client
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetString(0),
                 Name = reader.GetString(1),
                 DNI = reader.GetString(2),
                 Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
@@ -105,7 +105,7 @@ namespace EimmyTool.Services
 
             return new Client
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetString(0),
                 Name = reader.GetString(1),
                 DNI = reader.GetString(2),
                 Email = reader.IsDBNull(3) ? "" : reader.GetString(3),

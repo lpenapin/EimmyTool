@@ -50,7 +50,7 @@ namespace EimmyTool.Services
             {
                 list.Add(new InventoryItem
                 {
-                    Id = reader.GetInt32(0),
+                    Id = reader.GetString(0),
                     Name = reader.GetString(1),
                     Quantity = reader.GetInt32(2),
                     Price = reader.GetDecimal(3),
@@ -82,7 +82,7 @@ namespace EimmyTool.Services
 
             return new InventoryItem
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetString(0),
                 Name = reader.GetString(1),
                 Quantity = reader.GetInt32(2),
                 Price = reader.GetDecimal(3),

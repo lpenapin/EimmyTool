@@ -27,188 +27,189 @@ namespace EimmyTool.Infrastructure
         );
 
         CREATE TABLE IF NOT EXISTS Clients (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
-            DNI TEXT NOT NULL,
+            DNI TEXT,
             email TEXT,
             phone TEXT,
             address TEXT,
-            debt REAL DEFAULT 0,
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            debt DECIMAL(18,2) DEFAULT 0,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
-        CREATE TABLE IF NOT EXISTS Products (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE NOT EXISTS Products_new (
+            id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
             description TEXT,
-            SKU TEXT UNIQUE,
-            cost_price REAL NOT NULL,
-            sale_price REAL NOT NULL,
-            retail_price REAL,
-            stock INTEGER NOT NULL DEFAULT 0,
-            is_active INTEGER NOT NULL DEFAULT 1,
-            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            SKU TEXT,
+            cost_price DECIMAL(18,2),
+            sale_price DECIMAL(18,2),
+            retail_price DECIMAL(18,2),
+            stock INTEGER DEFAULT 0,
+            is_active INTEGER DEFAULT 1,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
 
         CREATE TABLE IF NOT EXISTS Suppliers (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY NOT NULL,
             name TEXT NOT NULL,
             DNI TEXT NOT NULL,
             email TEXT,
             phone TEXT,
             address TEXT,
-            debt REAL DEFAULT 0,
+            debt DECIMAL(18,2) DEFAULT 0,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
 
         CREATE TABLE IF NOT EXISTS SalesInvoices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            client_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            InvoiceNumber TEXT UNIQUE NOT NULL,
+            client_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
             invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             paid_full INTEGER NOT NULL DEFAULT 1,
-            paid REAL,
-            total REAL NOT NULL,
+            paid DECIMAL(18,2) DEFAULT 0,,
+            total DECIMAL(18,2) NOT NULL,
             FOREIGN KEY (client_id) REFERENCES Clients(id),
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS SalesInvoiceItems (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            invoice_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            invoice_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
             quantity INTEGER NOT NULL,
-            unit_price REAL NOT NULL,
-            total REAL NOT NULL,
+            unit_price DECIMAL(18,2) NOT NULL,
+            total DECIMAL(18,2) NOT NULL,
             FOREIGN KEY (invoice_id) REFERENCES SalesInvoices(id) ON DELETE CASCADE,
             FOREIGN KEY (product_id) REFERENCES Products(id)
         );
 
         CREATE TABLE IF NOT EXISTS Salaries (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY NOT NULL,
             salary_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             user_id INTEGER,
-            hours_worked REAL,
-            hour_cost REAL,
-            total_paid REAL,
+            hours_worked DECIMAL(18,2),
+            hour_cost DECIMAL(18,2),
+            total_paid DECIMAL(18,2),
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS PurchaseInvoices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            supplier_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            supplier_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
             invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             paid_full INTEGER NOT NULL DEFAULT 1,
-            paid REAL,
-            total REAL NOT NULL, 
+            paid DECIMAL(18,2),
+            total DECIMAL(18,2) NOT NULL,
             supplier_invoice TEXT,
             FOREIGN KEY (supplier_id) REFERENCES Suppliers(id),
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS PurchaseInvoiceItems (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            invoice_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            invoice_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
             quantity INTEGER NOT NULL,
-            unit_cost REAL NOT NULL,
-            total REAL NOT NULL,
+            unit_cost DECIMAL(18,2) NOT NULL,
+            total DECIMAL(18,2) NOT NULL,
             FOREIGN KEY (invoice_id) REFERENCES PurchaseInvoices(id) ON DELETE CASCADE,
             FOREIGN KEY (product_id) REFERENCES Products(id)
         );
 
         CREATE TABLE IF NOT EXISTS PayDebtInvoices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            client_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            client_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
             invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            paid REAL,
+            paid DECIMAL(18,2),
             FOREIGN KEY (client_id) REFERENCES Clients(id),
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS PayCreditInvoices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            supplier_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            supplier_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
             invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            paid REAL,
+            paid DECIMAL(18,2),
             FOREIGN KEY (supplier_id) REFERENCES Suppliers(id),
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS InventoryMovements (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            user_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
             quantity INTEGER NOT NULL,
-            movement_type TEXT NOT NULL, -- IN / OUT
-            reference TEXT,             -- Invoice number or description
+            movement_type TEXT NOT NULL,
+            reference TEXT,
             created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (product_id) REFERENCES Products(id),
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS GeneralExpenses (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY NOT NULL,
             invoice_ref TEXT NOT NULL,
             details TEXT NOT NULL,
-            total REAL NOT NULL,
+            total DECIMAL(18,2) NOT NULL,
             date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            user_id INT,
+            user_id TEXT,
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS CashFlow (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id TEXT PRIMARY KEY NOT NULL,
             date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             type TEXT,
             detail TEXT,
-            value REAL,
+            value DECIMAL(18,2),
             reference_table TEXT,
-            reference_id INT,
-            user_id INT,
+            reference_id TEXT,
+            user_id TEXT,
             FOREIGN KEY (user_id) REFERENCES Users(id)
         );
 
         CREATE TABLE IF NOT EXISTS ReturnInvoices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            client_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            client_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
             invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             sale_invoice TEXT,
-            total REAL NOT NULL,
+            total DECIMAL(18,2) NOT NULL,
             FOREIGN KEY (sale_invoice) REFERENCES SalesInvoices(id),
             FOREIGN KEY (user_id) REFERENCES Users(id),
             FOREIGN KEY (client_id) REFERENCES Clients(id)
         );
 
         CREATE TABLE IF NOT EXISTS ReturnInvoiceItems (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            return_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            return_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
             quantity INTEGER NOT NULL,
             FOREIGN KEY (return_id) REFERENCES ReturnInvoices(id) ON DELETE CASCADE,
             FOREIGN KEY (product_id) REFERENCES Products(id)
         );
 
         CREATE TABLE IF NOT EXISTS ReturnSupplierInvoices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            supplier_id INTEGER NOT NULL,
-            user_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            supplier_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
             invoice_date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             buy_invoice TEXT,
-            total REAL NOT NULL,
+            total DECIMAL(18,2) NOT NULL,
             FOREIGN KEY (buy_invoice) REFERENCES PurchaseInvoices(id),
             FOREIGN KEY (user_id) REFERENCES Users(id),
             FOREIGN KEY (supplier_id) REFERENCES Suppliers(id)
         );
 
         CREATE TABLE IF NOT EXISTS ReturnSupplierInvoiceItems (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            return_id INTEGER NOT NULL,
-            product_id INTEGER NOT NULL,
+            id TEXT PRIMARY KEY NOT NULL,
+            return_id TEXT NOT NULL,
+            product_id TEXT NOT NULL,
             quantity INTEGER NOT NULL,
             FOREIGN KEY (return_id) REFERENCES ReturnSupplierInvoices(id) ON DELETE CASCADE,
             FOREIGN KEY (product_id) REFERENCES Products(id)

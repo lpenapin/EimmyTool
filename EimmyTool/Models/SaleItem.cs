@@ -5,7 +5,7 @@ namespace EimmyTool.Models
 {
     public class SaleItem : INotifyPropertyChanged
     {
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public string SKU { get; set; } = "";
         public string Name { get; set; } = "";
         public int MaxQuantity { get; set; }

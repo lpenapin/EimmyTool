@@ -36,7 +36,7 @@ namespace EimmyTool.Services
                 {
                     list.Add(new InventoryItem
                     {
-                        Id = reader.GetInt32(0),
+                        Id = reader.GetString(0),
                         Name = reader.GetString(1),
                         Description = reader.IsDBNull(2) ? "" :reader.GetString(2),
                         SKU = reader.GetString(3),

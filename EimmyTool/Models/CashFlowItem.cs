@@ -9,7 +9,7 @@ namespace EimmyTool.Models
     internal class CashFlowItem
     {
         public string Detail { get; set; }
-        public int Reference { get; set; }
+        public string Reference { get; set; }
         public decimal Debit { get; set; }
         public decimal Credit { get; set; }
         public string User { get; set; }

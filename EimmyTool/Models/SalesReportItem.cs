@@ -2,7 +2,7 @@
 {
     public class SalesReportItem
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Client { get; set; }
         public string User { get; set; }
         public decimal Paid { get; set; }

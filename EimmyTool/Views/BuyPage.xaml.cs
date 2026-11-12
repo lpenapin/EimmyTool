@@ -20,7 +20,7 @@ namespace EimmyTool.Views
         private readonly ProviderService _providerService;
         private readonly ProductService _productService;
         private readonly ObservableCollection<BuyItem> _items = new();
-        private int _currentProductId;
+        private string _currentProductId;
         private decimal _taxRate = 0m; // 0%
         private decimal Subtotal => _items.Sum(i => i.Total);
         private decimal TaxAmount => Subtotal * _taxRate / 100m;
@@ -77,7 +77,7 @@ namespace EimmyTool.Views
             {
                 ProductNameBox.Text = "";
                 ProductNameBox.PlaceholderText = "Ingrese nombre del nuevo producto";
-                _currentProductId = 0;
+                _currentProductId = "";
                 _currentStock = 0;
                 _isNewProduct = true;
                 ProductNameBox.Focus(FocusState.Programmatic);

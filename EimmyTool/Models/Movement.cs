@@ -9,7 +9,7 @@ namespace EimmyTool.Models
     public class Movement
     {
         public string Date { get; set; }
-        public int Invoice {  get; set; }
+        public string Invoice {  get; set; }
         public int Quantity { get; set; }
         public string Description { get; set; }
         public decimal Paid { get; set; }

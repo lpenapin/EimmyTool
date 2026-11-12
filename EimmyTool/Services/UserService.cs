@@ -67,7 +67,7 @@ namespace EimmyTool.Services
             {
                 list.Add(new Models.User
                 {
-                    Id = reader.GetInt32(0),
+                    Id = reader.GetString(0),
                     Username = reader.GetString(1),
                     Name = reader.GetString(2),
                     DNI = reader.GetString(3),
@@ -100,7 +100,7 @@ namespace EimmyTool.Services
 
             return new Models.User
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetString(0),
                 Username = reader.GetString(1),
                 Name = reader.GetString(2),
                 DNI = reader.GetString(3),
@@ -134,7 +134,7 @@ namespace EimmyTool.Services
                 {
                     Models.User.CurrentUser = new Models.User
                     {
-                        Id = reader.GetInt32(0),
+                        Id = reader.GetString(0),
                         Username = reader.GetString(1),
                         Name = reader.GetString(2),
                         IsAdmin = reader.GetInt32(3),

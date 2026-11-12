@@ -38,7 +38,7 @@ namespace EimmyTool.Services
                     MaxQuantity = reader.GetInt32(1),
                     Quantity = reader.GetInt32(1),
                     UnitPrice = reader.GetDecimal(2),
-                    ProductId = reader.GetInt32(3)
+                    ProductId = reader.GetString(3)
                 });
             }
             return list;
@@ -95,7 +95,7 @@ namespace EimmyTool.Services
                     MaxQuantity = reader.GetInt32(1),
                     Quantity = reader.GetInt32(1),
                     UnitPrice = reader.GetDecimal(2),
-                    ProductId = reader.GetInt32(3)
+                    ProductId = reader.GetString(3)
                 });
             }
             return list;

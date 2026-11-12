@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
+using System.Data;
 
 namespace EimmyTool.Services
 {
@@ -41,7 +42,7 @@ namespace EimmyTool.Services
             {
                 var item = new SalesReportItem
                 {
-                    Id = reader.GetInt32(0),
+                    Id = reader.GetString(0),
                     Client = reader.GetString(1),
                     User = reader.GetString(2),
                     Total = reader.GetDecimal(3),
@@ -80,7 +81,7 @@ namespace EimmyTool.Services
             {
                 var item = new SalesReportItem
                 {
-                    Id = reader.GetInt32(0),
+                    Id = reader.GetString(0),
                     Client = reader.GetString(1),
                     User = reader.GetString(2),
                     Total = reader.GetDecimal(3),
@@ -199,7 +200,7 @@ namespace EimmyTool.Services
                     list.Add(new CashFlowItem
                     {
                         Detail = reader.GetString(0),
-                        Reference = reader.GetInt32(1),
+                        Reference = reader.GetString(1),
                         Debit = reader.GetDecimal(2),
                         Credit = reader.GetDecimal(3),
                         User = reader.GetString(4)

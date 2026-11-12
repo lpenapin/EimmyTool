@@ -8,7 +8,7 @@ namespace EimmyTool.Models
 {
     class Expense
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string invoice { get; set; } = "";
         public string Details { get; set; } = "";
         public decimal Total { get; set; }

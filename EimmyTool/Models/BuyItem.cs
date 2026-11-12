@@ -4,7 +4,7 @@ namespace EimmyTool.Models
 {
     public class BuyItem
     {
-        public int ProductId { get; set; }
+        public string ProductId { get; set; }
         public string SKU { get; set; } = "";
         public string Name { get; set; } = "";
         private int _quantity;

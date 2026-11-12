@@ -9,10 +9,10 @@ namespace EimmyTool.Models
 {
     public class InvoiceItem : INotifyPropertyChanged
     {
-        public int Id { get; set; }
-        public int InvoiceId { get; set; }
-        public int ClientId { get; set; }
-        public int ProductId { get; set; }
+        public string Id { get; set; }
+        public string InvoiceId { get; set; }
+        public string ClientId { get; set; }
+        public string ProductId { get; set; }
         public string ProductName { get; set; } = string.Empty;
         public int MaxQuantity { get; set; }
         private int _quantity;

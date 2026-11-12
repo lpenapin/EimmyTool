@@ -42,7 +42,7 @@ namespace EimmyTool.Services
             {
                 list.Add(new Client
                 {
-                    Id = reader.GetInt32(0),
+                    Id = reader.GetString(0),
                     Name = reader.GetString(1),
                     DNI = reader.GetString(2),
                     Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
@@ -74,7 +74,7 @@ namespace EimmyTool.Services
 
             return new Client
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetString(0),
                 Name = reader.GetString(1),
                 DNI = reader.GetString(2),
                 Email = reader.IsDBNull(3) ? "" : reader.GetString(3),
@@ -83,7 +83,7 @@ namespace EimmyTool.Services
                 Debt = reader.IsDBNull(6) ? 0 : reader.GetDecimal(6),
             };
         }
-        public Client? GetByInvoice(int invoice)
+        public Client? GetByInvoice(string invoice)
         {
             using var conn = new SqliteConnection(_cs);
             conn.Open();
@@ -104,7 +104,7 @@ namespace EimmyTool.Services
 
             return new Client
             {
-                Id = reader.GetInt32(0),
+                Id = reader.GetString(0),
                 Name = reader.GetString(1),
                 DNI = reader.GetString(2),
                 Email = reader.IsDBNull(3) ? "" : reader.GetString(3),

@@ -45,7 +45,7 @@ namespace EimmyTool.Services
                 list.Add(new Movement
                 {
                     Date = reader.GetString(0),
-                    Invoice = reader.GetInt32(1),
+                    Invoice = reader.GetString(1),
                     Quantity = reader.GetInt32(2),
                     Description = reader.GetString(3),
                     Paid = reader.GetDecimal(4),
@@ -82,7 +82,7 @@ namespace EimmyTool.Services
                 list.Add(new Movement
                 {
                     Date = reader.GetString(0),
-                    Invoice = reader.GetInt32(1),
+                    Invoice = reader.GetString(1),
                     Quantity = reader.GetInt32(2),
                     Description = reader.GetString(3),
                     Paid = reader.GetDecimal(4),
@@ -117,7 +117,7 @@ namespace EimmyTool.Services
                 list.Add(new Movement
                 {
                     Date = reader.GetString(0),
-                    Invoice = reader.GetInt32(1),
+                    Invoice = reader.GetString(1),
                     Quantity = reader.GetInt32(2),
                     Paid = reader.GetDecimal(3),
                     Total = reader.GetDecimal(3)
